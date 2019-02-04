@@ -1,0 +1,26 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'com.dw'
+version = '1.0'
+
+description = """qrapids-qma-elastic"""
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+
+
+repositories {
+        
+     maven { url "http://repo.maven.apache.org/maven2" }
+}
+dependencies {
+    compile group: 'org.elasticsearch', name: 'elasticsearch', version:'5.6.3'
+    compile group: 'com.google.code.gson', name: 'gson', version:'2.8.2'
+    compile group: 'org.elasticsearch.client', name: 'elasticsearch-rest-client', version:'5.6.3'
+    compile group: 'org.elasticsearch.client', name: 'elasticsearch-rest-high-level-client', version:'5.6.3'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version:'2.9.1'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version:'2.9.1'
+    testCompile group: 'junit', name: 'junit', version:'3.8.1'
+}

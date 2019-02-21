@@ -4,6 +4,11 @@ import DTOs.EstimationEvaluationDTO;
 import DTOs.EvaluationDTO;
 import DTOs.FactorEvaluationDTO;
 import DTOs.QuadrupletDTO;
+import com.sun.tools.internal.jxc.ap.Const;
+import jdk.vm.ci.meta.Constant;
+import org.elasticsearch.action.bulk.BulkRequest;
+import org.elasticsearch.action.bulk.BulkRequestBuilder;
+import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
@@ -85,6 +90,10 @@ public class Queries {
     {
         return getIndexPath(Constants.INDEX_METRICS, projectId);
     }
+    private static String getRelationsIndex(String projectId)
+    {
+        return getIndexPath(Constants.INDEX_RELATIONS, projectId);
+    }
 
     public static SearchResponse getLatest(Constants.QMLevel QMLevel, String projectId,  String parent) throws IOException {
         RestHighLevelClient client = Connection.getConnectionClient();
@@ -119,6 +128,8 @@ public class Queries {
                 index = getFactorsIndex(projectId);break;
             case metrics:
                 index = getMetricsIndex(projectId);break;
+            case relations:
+                index = getRelationsIndex(projectId);break;
         }
 //        System.out.println("GET INDEX: " + index);
         return index;
@@ -345,6 +356,31 @@ public class Queries {
         return response;
     }
 
+    public static void setFactorSIRelationIndex(String projectID, LocalDate evaluationDate, String relation,
+                                                String sourceID, String targetID, double value,
+                                                double weight, String targetValue, String sourceLabel) throws IOException {
+
+        RestHighLevelClient client = Connection.getConnectionClient();
+        BulkRequest request = new BulkRequest();
+        request.add(new IndexRequest(getRelationsIndex(projectID), Constants.RELATIONS_TYPE, relation)
+                .source(jsonBuilder()
+                .startObject()
+                .field(Constants.EVALUATION_DATE, evaluationDate)
+                .field(Constants.PROJECT, projectID)
+                .field(Constants.RELATION, relation)
+                .field(Constants.SOURCEID, sourceID)
+                .field(Constants.SOURCETYPE, Constants.FACTOR_TYPE)
+                .field(Constants.TARGETID, targetID)
+                .field(Constants.TARGETTPYE, Constants.DASHBOARDINDICATORS)
+                .field(Constants.VALUE, value)                                  //FALTA LOGICA
+                .field(Constants.WEIGHT, weight)                                //FALTA LOGICA
+                .field(Constants.TARGETVALUE, targetValue)
+                .field(Constants.SOURCELABEL, sourceLabel)                      //FALTA LOGICA
+                .endObject()));
+
+        BulkResponse bulkresponse = client.bulk(request);
+
+    }
 
     public static Response getIndexes() throws IOException {
         RestClient client = Connection.getLowLevelConnectionClient();

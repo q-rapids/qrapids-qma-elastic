@@ -11,6 +11,7 @@ public class Constants {
     static final String METRIC_TYPE = "metrics";
     static final String FACTOR_TYPE = "factors";
     static final String STRATEGIC_INDICATOR_TYPE = "strategic_indicators";
+    static final String RELATIONS_TYPE = "relations";
 
     //FIELDS//
     // related to the element
@@ -26,6 +27,16 @@ public class Constants {
     static final String DATES_MISMATCH = "dates_mismatch_days"; // new (v1.0
                                                                 // maximum difference (in days) when there is
                                                                 // difference evaluation dates between the SI and Factor
+    // related to the relations
+    static final String RELATION = "relation";
+    static final String SOURCEID = "sourceId";
+    static final String SOURCETYPE = "sourceType";
+    static final String TARGETID = "targetId";
+    static final String TARGETTPYE = "targetType";
+    static final String WEIGHT = "weight";
+    static final String TARGETVALUE = "targetValue";
+    static final String SOURCELABEL = "sourceLabel";
+    static final String DASHBOARDINDICATORS = "dashboardindicator";
 
     //INDEXES//
     public static String PATH = "";             // public, it is accessed from outside of the package
@@ -33,6 +44,7 @@ public class Constants {
     static final String INDEX_STRATEGIC_INDICATORS = "strategic_indicators";
     public static final String INDEX_FACTORS = "factors";
     public static final String INDEX_METRICS = "metrics";
+    public static final String INDEX_RELATIONS = "relations";
 
     //ARRAYS//
     static final String ARRAY_FACTORS = "factors";
@@ -46,6 +58,6 @@ public class Constants {
     static final String ESTIMATION_UPPER_THRESHOLD = "upperThreshold";
 
     //OTHERS//
-    public enum QMLevel {metrics, factors, strategic_indicators}
+    public enum QMLevel {metrics, factors, strategic_indicators, relations}
 
 }

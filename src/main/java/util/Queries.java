@@ -4,8 +4,6 @@ import DTOs.EstimationEvaluationDTO;
 import DTOs.EvaluationDTO;
 import DTOs.FactorEvaluationDTO;
 import DTOs.QuadrupletDTO;
-import com.sun.tools.internal.jxc.ap.Const;
-import jdk.vm.ci.meta.Constant;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -35,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
+import static util.Constants.*;
 
 public class Queries {
     public static String getStringFromMap(Map<String, Object> map, String k) {
@@ -73,29 +72,29 @@ public class Queries {
     }
 
     private static String getIndexPath(String element_index_name, String projectId) {
-        String index=Constants.PATH + Constants.INDEX_PREFIX + element_index_name;
+        String index= PATH + INDEX_PREFIX + element_index_name;
         if (projectId!=null && !projectId.isEmpty() && !projectId.equalsIgnoreCase("EMPTY")&&
                 !projectId.equalsIgnoreCase("\"\""))
             index=index.concat("."+projectId);
         return index;
     }
     private static String getFactorsIndex(String projectId) {
-        return getIndexPath(Constants.INDEX_FACTORS, projectId);
+        return getIndexPath(INDEX_FACTORS, projectId);
     }
 
     private static String getStrategicIndicatorsIndex(String projectId) {
-        return getIndexPath(Constants.INDEX_STRATEGIC_INDICATORS, projectId);
+        return getIndexPath(INDEX_STRATEGIC_INDICATORS, projectId);
     }
     private static String getMetricsIndex(String projectId)
     {
-        return getIndexPath(Constants.INDEX_METRICS, projectId);
+        return getIndexPath(INDEX_METRICS, projectId);
     }
     private static String getRelationsIndex(String projectId)
     {
-        return getIndexPath(Constants.INDEX_RELATIONS, projectId);
+        return getIndexPath(INDEX_RELATIONS, projectId);
     }
 
-    public static SearchResponse getLatest(Constants.QMLevel QMLevel, String projectId,  String parent) throws IOException {
+    public static SearchResponse getLatest(QMLevel QMLevel, String projectId, String parent) throws IOException {
         RestHighLevelClient client = Connection.getConnectionClient();
         return client.search(new SearchRequest(getIndex(projectId, QMLevel))
                 .source(new SearchSourceBuilder()
@@ -105,7 +104,7 @@ public class Queries {
                                 AggregationBuilders.terms("IDGroup").field(getIDtoGroup(QMLevel)).size(10000)
                                         .subAggregation(
                                                 AggregationBuilders.topHits("latest")
-                                                        .sort(Constants.EVALUATION_DATE, SortOrder.DESC)
+                                                        .sort(EVALUATION_DATE, SortOrder.DESC)
                                                         .explain(true)
                                                         .size(1)
                                         )
@@ -115,11 +114,11 @@ public class Queries {
         );
     }
 
-    public static SearchResponse getLatest(String projectId, Constants.QMLevel QMLevel) throws IOException {
+    public static SearchResponse getLatest(String projectId, QMLevel QMLevel) throws IOException {
         return getLatest(QMLevel, projectId,"all");
     }
 
-    private static String getIndex(String projectId, Constants.QMLevel QMLevel) {
+    private static String getIndex(String projectId, QMLevel QMLevel) {
         String index="";
         switch (QMLevel) {
             case strategic_indicators:
@@ -136,15 +135,15 @@ public class Queries {
     }
 
     // These two functions could be transformed into two Hashmaps
-    private static String getIDtoGroup(Constants.QMLevel QMLevel) {
+    private static String getIDtoGroup(QMLevel QMLevel) {
         String group;
         switch (QMLevel) {
             case strategic_indicators:
-                group = Constants.STRATEGIC_INDICATOR_ID;break;
+                group = STRATEGIC_INDICATOR_ID;break;
             case factors:
-                group = Constants.FACTOR_ID; break;
+                group = FACTOR_ID; break;
             case metrics:
-                group = Constants.METRIC_ID; break;
+                group = METRIC_ID; break;
             default:
                 group="";
         }
@@ -154,7 +153,7 @@ public class Queries {
 
 
     // parent means that you are searching elements that are related to other, e.g. the factors for a specific SI
-    private static QueryBuilder getLatestParentQueryBuilder(String parent, Constants.QMLevel QMLevel) {
+    private static QueryBuilder getLatestParentQueryBuilder(String parent, QMLevel QMLevel) {
         QueryBuilder query=null;
 
         if (parent.equals("all")) {
@@ -164,19 +163,19 @@ public class Queries {
             if (QMLevel==Constants.QMLevel.metrics) {
                 query = QueryBuilders
                         .boolQuery()
-                        .must(new TermQueryBuilder(Constants.ARRAY_FACTORS, parent));
+                        .must(new TermQueryBuilder(ARRAY_FACTORS, parent));
             }
             else {
                 // The strategic indicators in the factors index contains the evaluation date --> we need to use wildcards
                 query = QueryBuilders.
                         boolQuery()
-                        .must( new WildcardQueryBuilder(Constants.ARRAY_STRATEGIC_INDICATORS, parent + "*"));
+                        .must( new WildcardQueryBuilder(ARRAY_STRATEGIC_INDICATORS, parent + "*"));
             }
         }
         return query;
     }
 
-    private static QueryBuilder getRangedParentQueryBuilder(String parent, Constants.QMLevel QMLevel,
+    private static QueryBuilder getRangedParentQueryBuilder(String parent, QMLevel QMLevel,
                                                             LocalDate dateFrom, LocalDate dateTo) {
         String from, to;
         from = FormattedDates.formatDate(dateFrom);
@@ -185,7 +184,7 @@ public class Queries {
         QueryBuilder query=null;
         if (parent.equals("all")) {
             query = QueryBuilders
-                    .rangeQuery(Constants.EVALUATION_DATE)
+                    .rangeQuery(EVALUATION_DATE)
                     .gte(from)
                     .lte(to);
         }
@@ -193,18 +192,18 @@ public class Queries {
             if (QMLevel==Constants.QMLevel.metrics) {
                 query = QueryBuilders
                         .boolQuery()
-                        .must(new TermQueryBuilder(Constants.ARRAY_FACTORS, parent))
+                        .must(new TermQueryBuilder(ARRAY_FACTORS, parent))
                         .filter(QueryBuilders
-                                .rangeQuery(Constants.EVALUATION_DATE)
+                                .rangeQuery(EVALUATION_DATE)
                                 .gte(from)
                                 .lte(to));
             }
             else {
                 query = QueryBuilders
                         .boolQuery()
-                        .must(new WildcardQueryBuilder(Constants.ARRAY_STRATEGIC_INDICATORS, parent + "*"))
+                        .must(new WildcardQueryBuilder(ARRAY_STRATEGIC_INDICATORS, parent + "*"))
                         .filter(QueryBuilders
-                                .rangeQuery(Constants.EVALUATION_DATE)
+                                .rangeQuery(EVALUATION_DATE)
                                 .gte(from)
                                 .lte(to));
             }
@@ -213,7 +212,7 @@ public class Queries {
         return query;
     }
 
-    public static SearchResponse getRanged(Constants.QMLevel QMLevel, String projectId , String parent,
+    public static SearchResponse getRanged(QMLevel QMLevel, String projectId , String parent,
                                            LocalDate dateFrom, LocalDate dateTo) throws IOException {
 
         RestHighLevelClient client = Connection.getConnectionClient();
@@ -227,7 +226,7 @@ public class Queries {
                                         AggregationBuilders.terms("IDGroup").field(getIDtoGroup(QMLevel)).size(10000)
                                                 .subAggregation(
                                                         AggregationBuilders.topHits("latest")
-                                                                .sort(Constants.EVALUATION_DATE, SortOrder.ASC)
+                                                                .sort(EVALUATION_DATE, SortOrder.ASC)
                                                                 .explain(true)
                                                                 .size(10000)
                                                 )
@@ -236,12 +235,12 @@ public class Queries {
         );
     }
 
-    public static SearchResponse getRanged(Constants.QMLevel QMLevel, String projectId, LocalDate dateFrom, LocalDate dateTo)
+    public static SearchResponse getRanged(QMLevel QMLevel, String projectId, LocalDate dateFrom, LocalDate dateTo)
             throws IOException {
         return getRanged(QMLevel, projectId,"all", dateFrom, dateTo);
     }
 
-    public static UpdateResponse setStrategicIndicatorValue(Constants.QMLevel QMLevel,
+    public static UpdateResponse setStrategicIndicatorValue(QMLevel QMLevel,
                                                             String hardID,
                                                             String projectId,
                                                             String strategicIndicatorID,
@@ -256,37 +255,37 @@ public class Queries {
 
         XContentBuilder indexReqObj = jsonBuilder()
                 .startObject()
-                .field(Constants.PROJECT, projectId)
-                .field(Constants.STRATEGIC_INDICATOR_ID, strategicIndicatorID)
-                .field(Constants.EVALUATION_DATE, evaluationDate)
-                .field(Constants.DATA_SOURCE, "QRapids Dashboard")
-                .field(Constants.NAME, strategicIndicatorName)
-                .field(Constants.DESCRIPTION, strategicIndicatorDescription);
+                .field(PROJECT, projectId)
+                .field(STRATEGIC_INDICATOR_ID, strategicIndicatorID)
+                .field(EVALUATION_DATE, evaluationDate)
+                .field(DATA_SOURCE, "QRapids Dashboard")
+                .field(NAME, strategicIndicatorName)
+                .field(DESCRIPTION, strategicIndicatorDescription);
 
         // If the entry already exists, we update the information about the assessment
         XContentBuilder updateReqObj = jsonBuilder().startObject();
 
-        updateReqObj.field(Constants.VALUE, value);
-        indexReqObj.field(Constants.VALUE, value);
-        updateReqObj.field(Constants.MISSING_FACTORS, missingFactors);
-        indexReqObj.field(Constants.MISSING_FACTORS, missingFactors);
-        updateReqObj.field(Constants.DATES_MISMATCH, datesMismatch);
-        indexReqObj.field(Constants.DATES_MISMATCH, datesMismatch);
+        updateReqObj.field(VALUE, value);
+        indexReqObj.field(VALUE, value);
+        updateReqObj.field(MISSING_FACTORS, missingFactors);
+        indexReqObj.field(MISSING_FACTORS, missingFactors);
+        updateReqObj.field(DATES_MISMATCH, datesMismatch);
+        indexReqObj.field(DATES_MISMATCH, datesMismatch);
 
         if (estimation != null) {
-            updateReqObj.startArray(Constants.ESTIMATION);
-            indexReqObj.startArray(Constants.ESTIMATION);
+            updateReqObj.startArray(ESTIMATION);
+            indexReqObj.startArray(ESTIMATION);
             for (QuadrupletDTO<Integer, String, Float, Float> e : estimation.getEstimation()) {
                 indexReqObj.startObject();
                 updateReqObj.startObject();
-                indexReqObj.field(Constants.ESTIMATION_ID, e.getFirst());
-                updateReqObj.field(Constants.ESTIMATION_ID, e.getFirst());
-                indexReqObj.field(Constants.ESTIMATION_LABEL, e.getSecond());
-                updateReqObj.field(Constants.ESTIMATION_LABEL, e.getSecond());
-                indexReqObj.field(Constants.ESTIMATION_VALUE, e.getThird());
-                updateReqObj.field(Constants.ESTIMATION_VALUE, e.getThird());
-                indexReqObj.field(Constants.ESTIMATION_UPPER_THRESHOLD, e.getFourth());
-                updateReqObj.field(Constants.ESTIMATION_UPPER_THRESHOLD, e.getFourth());
+                indexReqObj.field(ESTIMATION_ID, e.getFirst());
+                updateReqObj.field(ESTIMATION_ID, e.getFirst());
+                indexReqObj.field(ESTIMATION_LABEL, e.getSecond());
+                updateReqObj.field(ESTIMATION_LABEL, e.getSecond());
+                indexReqObj.field(ESTIMATION_VALUE, e.getThird());
+                updateReqObj.field(ESTIMATION_VALUE, e.getThird());
+                indexReqObj.field(ESTIMATION_UPPER_THRESHOLD, e.getFourth());
+                updateReqObj.field(ESTIMATION_UPPER_THRESHOLD, e.getFourth());
                 indexReqObj.endObject();
                 updateReqObj.endObject();
             }
@@ -298,12 +297,12 @@ public class Queries {
 
         RestHighLevelClient client = Connection.getConnectionClient();
         IndexRequest indexRequest = new IndexRequest(getIndex(projectId, QMLevel),
-                                                    Constants.INDEX_STRATEGIC_INDICATORS,
+                                                    INDEX_STRATEGIC_INDICATORS,
                                                     hardID)
                 .source(indexReqObj);
 
         UpdateRequest updateRequest = new UpdateRequest(getIndex(projectId, QMLevel),
-                                                        Constants.INDEX_STRATEGIC_INDICATORS,
+                                                        INDEX_STRATEGIC_INDICATORS,
                                                         hardID)
                 .doc(updateReqObj)
                 .upsert(indexRequest);
@@ -315,7 +314,7 @@ public class Queries {
     public static UpdateResponse setFactorStrategicIndicatorRelation(FactorEvaluationDTO factor)
             throws IOException {
 
-        String index_name = getIndex(factor.getProject(), Constants.QMLevel.factors);
+        String index_name = getIndex(factor.getProject(), QMLevel.factors);
 
         UpdateResponse response = new UpdateResponse();
         RestHighLevelClient client = Connection.getConnectionClient();
@@ -332,7 +331,7 @@ public class Queries {
 
                 IndexRequest indexReq = new IndexRequest(
                         index_name,
-                        Constants.FACTOR_TYPE,
+                        FACTOR_TYPE,
                         factorID)
                         .source(jsonBuilder()
                                 .startObject()
@@ -340,12 +339,12 @@ public class Queries {
 
                 UpdateRequest updateReq = new UpdateRequest (
                         index_name,
-                        Constants.FACTOR_TYPE,
+                        FACTOR_TYPE,
                         factorID)
                         .doc(jsonBuilder()
                                 .startObject()
 //                                .array(Constants.ARRAY_STRATEGIC_INDICATORS, factor.getStrategicIndicators())
-                                .field(Constants.ARRAY_STRATEGIC_INDICATORS, factor.getStrategicIndicators())
+                                .field(ARRAY_STRATEGIC_INDICATORS, factor.getStrategicIndicators())
                                 .endObject())
                         .upsert(indexReq);
                 response = client.update(updateReq);
@@ -356,37 +355,66 @@ public class Queries {
         return response;
     }
 
-    public static void setFactorSIRelationIndex(String projectID, LocalDate evaluationDate, String relation,
+    public static boolean setFactorSIRelationIndex(String projectID, LocalDate evaluationDate, String relation,
                                                 String sourceID, String targetID, double value,
                                                 double weight, String targetValue, String sourceLabel) throws IOException {
 
         RestHighLevelClient client = Connection.getConnectionClient();
-        BulkRequest request = new BulkRequest();
-        request.add(new IndexRequest(getRelationsIndex(projectID), Constants.RELATIONS_TYPE, relation)
-                .source(jsonBuilder()
-                .startObject()
-                .field(Constants.EVALUATION_DATE, evaluationDate)
-                .field(Constants.PROJECT, projectID)
-                .field(Constants.RELATION, relation)
-                .field(Constants.SOURCEID, sourceID)
-                .field(Constants.SOURCETYPE, Constants.FACTOR_TYPE)
-                .field(Constants.TARGETID, targetID)
-                .field(Constants.TARGETTPYE, Constants.DASHBOARDINDICATORS)
-                .field(Constants.VALUE, value)                                  //FALTA LOGICA
-                .field(Constants.WEIGHT, weight)                                //FALTA LOGICA
-                .field(Constants.TARGETVALUE, targetValue)
-                .field(Constants.SOURCELABEL, sourceLabel)                      //FALTA LOGICA
-                .endObject()));
+        BulkRequest request = (sourceLabel == null ? buildNumericRequest(projectID, evaluationDate, relation, sourceID,
+                targetID, value, weight, targetValue) : buildBNRequest(projectID, evaluationDate, relation, sourceID,
+                targetID, value, targetValue, sourceLabel));
 
         BulkResponse bulkresponse = client.bulk(request);
+        return !bulkresponse.hasFailures();
+    }
 
+    public static BulkRequest buildNumericRequest(String projectID, LocalDate evaluationDate, String relation,
+                                                  String sourceID, String targetID, double value,
+                                                  double weight, String targetValue) throws IOException {
+        BulkRequest request = new BulkRequest();
+        request.add(new IndexRequest(getRelationsIndex(projectID), RELATIONS_TYPE, relation)
+                .source(jsonBuilder()
+                        .startObject()
+                        .field(EVALUATION_DATE, evaluationDate)
+                        .field(PROJECT, projectID)
+                        .field(RELATION, relation)
+                        .field(SOURCEID, sourceID)
+                        .field(SOURCETYPE, FACTOR_TYPE)
+                        .field(TARGETID, targetID)
+                        .field(TARGETTPYE, DASHBOARDINDICATORS)
+                        .field(VALUE, value)
+                        .field(WEIGHT, weight)
+                        .field(TARGETVALUE, targetValue)
+                        .endObject()));
+        return request;
+    }
+
+    public static BulkRequest buildBNRequest(String projectID, LocalDate evaluationDate, String relation,
+                                                  String sourceID, String targetID, double value,
+                                                  String targetValue, String sourceLabel) throws IOException {
+        BulkRequest request = new BulkRequest();
+        request.add(new IndexRequest(getRelationsIndex(projectID), RELATIONS_TYPE, relation)
+                .source(jsonBuilder()
+                        .startObject()
+                        .field(EVALUATION_DATE, evaluationDate)
+                        .field(PROJECT, projectID)
+                        .field(RELATION, relation)
+                        .field(SOURCEID, sourceID)
+                        .field(SOURCETYPE, FACTOR_TYPE)
+                        .field(TARGETID, targetID)
+                        .field(TARGETTPYE, DASHBOARDINDICATORS)
+                        .field(VALUE, value)
+                        .field(TARGETVALUE, targetValue)
+                        .field(SOURCELABEL, sourceLabel)                      //FALTA LOGICA
+                        .endObject()));
+        return request;
     }
 
     public static Response getIndexes() throws IOException {
         RestClient client = Connection.getLowLevelConnectionClient();
         Map<String, String> params = Collections.emptyMap();
 
-        String query = "/" + Constants.PATH +"_cat/indices?format=json";
+        String query = "/" + PATH +"_cat/indices?format=json";
 
         System.out.println(query);
         return client.performRequest("GET",query, params);

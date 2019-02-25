@@ -21,14 +21,14 @@ class QueryUtil {
     public static void main(String[] args) throws IOException {
         LocalDate dateFrom = LocalDate.of(2018,03, 01);
         LocalDate dateTo = LocalDate.of(2018, 03, 15);
-        String projectId="";
+        String projectId="test";
         String factorCQ = "codequality";
         String strategicIndicatorQ = "productquality";
 
-        String ip =  ""; //Set value before test
-        int port = 0000; //Set value before test
+        String ip = "*"; //Set value before test
+        int port = 9200; //Set value before test
         String path= "";
-        String prefix = "poc";
+        String prefix = "";
         String username = "";
         String password = "";
 
@@ -44,7 +44,15 @@ class QueryUtil {
 //              projectId=projects.get(0);
 //          else
 //              projectId="default";
-            
+
+            //RELATIONS
+            //StrategicIndicator.setStrategicIndicatorFactorRelation(projectId, factorCQ, strategicIndicatorQ, dateTo,
+              //      0.7d, 0.75d, null, "0.80");
+
+
+            StrategicIndicator.setStrategicIndicatorFactorRelation(projectId, "runtimeErrors",
+                    "HWReliability", dateTo, 0.0d, 0.4d, "Medium", "High");
+
             //CLASS: FACTOR
             System.err.println("-- FACTORS 1 - getEvaluations(projectId)");
             List<FactorEvaluationDTO> factorsEvaluationLatest = Factor.getEvaluations(projectId);
@@ -94,8 +102,8 @@ class QueryUtil {
 
         } catch (Exception ex)
         {
-            System.err.println("////QUERY TEST UTIL - ERROR " + ex.toString());
-
+            //System.err.println("////QUERY TEST UTIL - ERROR " + ex.toString());
+            throw ex;
         }
 
     }

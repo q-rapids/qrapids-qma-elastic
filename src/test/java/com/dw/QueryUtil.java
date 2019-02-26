@@ -1,6 +1,8 @@
 package com.dw;
 
 import DTOs.*;
+import DTOs.Relations.RelationDTO;
+import evaluation.Relations;
 import util.Connection;
 
 import evaluation.Factor;
@@ -9,6 +11,7 @@ import evaluation.StrategicIndicator;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,8 +22,8 @@ import java.util.List;
 class QueryUtil {
 
     public static void main(String[] args) throws IOException {
-        LocalDate dateFrom = LocalDate.of(2018,03, 01);
-        LocalDate dateTo = LocalDate.of(2018, 03, 15);
+        LocalDate dateFrom = LocalDate.of(2018,12, 01);
+        LocalDate dateTo = LocalDate.of(2018, 03, 16);
         String projectId="test";
         String factorCQ = "codequality";
         String strategicIndicatorQ = "productquality";
@@ -46,12 +49,22 @@ class QueryUtil {
 //              projectId="default";
 
             //RELATIONS
-            //StrategicIndicator.setStrategicIndicatorFactorRelation(projectId, factorCQ, strategicIndicatorQ, dateTo,
-              //      0.7d, 0.75d, null, "0.80");
+            //NUMERIC
+            String[] factorsID = {"codequality", "swstability"};
+            double[] sourceValues = {0.8d, 0.2d};
+            double[] weights = {0.7d, 0.3d};
+            Relations.setStrategicIndicatorFactorRelation(projectId, factorsID, strategicIndicatorQ, dateFrom,
+                    weights, sourceValues, null, "0.80");
 
+            //BN
+            String[] factorsID2 = {"runtimeErrors", "avrResponseTime"};
+            double[] sourceValues2 = {0.5d, 0.1d};
+            String[] sourceCategories = {"Medium", "Low"};
+            Relations.setStrategicIndicatorFactorRelation(projectId, factorsID2,"HWReliability",
+                    dateFrom, new double[]{0d}, sourceValues2, sourceCategories, "High");
 
-            StrategicIndicator.setStrategicIndicatorFactorRelation(projectId, "runtimeErrors",
-                    "HWReliability", dateTo, 0.0d, 0.4d, "Medium", "High");
+            //GET
+            ArrayList<RelationDTO> relations = Relations.getRelations("test", dateFrom);
 
             //CLASS: FACTOR
             System.err.println("-- FACTORS 1 - getEvaluations(projectId)");

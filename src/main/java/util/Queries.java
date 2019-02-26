@@ -53,6 +53,20 @@ public class Queries {
         return Float.valueOf(String.valueOf(map.get(k)));
     }
 
+    public static String safeGetFromStringArray(String[] array, int index) {
+        if (array != null && (index >= 0) && (index < array.length)) {
+            return array[index];
+        }
+        return "";
+    }
+
+    public static double safeGetFromDoubleArray(double[] array, int index) {
+        if ((index >= 0) && (index < array.length)) {
+            return array[index];
+        }
+        return 0d;
+    }
+
     public static String getStringFromMapOrDefault(Map<String, Object> map, String k, String def) {
         String valueOfmap = String.valueOf(map.get(k));
         if (valueOfmap.equals("null")) {
@@ -240,6 +254,28 @@ public class Queries {
         return getRanged(QMLevel, projectId,"all", dateFrom, dateTo);
     }
 
+    public static SearchResponse getRelations(LocalDate dateFrom, LocalDate dateTo, String projectId) throws IOException {
+        RestHighLevelClient client = Connection.getConnectionClient();
+        return client.search(new SearchRequest(getRelationsIndex(projectId))
+                .source(new SearchSourceBuilder()
+                        .query(QueryBuilders.rangeQuery(EVALUATION_DATE)
+                                .gte(dateFrom)
+                                .lte(dateTo))
+                .size(1000)
+                .sort(EVALUATION_DATE, SortOrder.DESC))
+        );
+    }
+
+    public static SearchResponse getLatestRelationsDate(String projectId) throws IOException {
+        RestHighLevelClient client = Connection.getConnectionClient();
+        return client.search(new SearchRequest(getRelationsIndex(projectId))
+                .source(new SearchSourceBuilder()
+                        .query(QueryBuilders.matchAllQuery())
+                        .size(1)
+                        .sort(EVALUATION_DATE, SortOrder.DESC))
+        );
+    }
+
     public static UpdateResponse setStrategicIndicatorValue(QMLevel QMLevel,
                                                             String hardID,
                                                             String projectId,
@@ -355,24 +391,34 @@ public class Queries {
         return response;
     }
 
-    public static boolean setFactorSIRelationIndex(String projectID, LocalDate evaluationDate, String relation,
-                                                String sourceID, String targetID, double value,
-                                                double weight, String targetValue, String sourceLabel) throws IOException {
+    public static boolean setFactorSIRelationIndex(String projectID, String[] factorID, double[] weight,
+                                                   double[] sourceValue, String[] sourceCategories,
+                                                   String strategicIndicatorID, LocalDate evaluationDate,
+                                                   String targetValue) throws IOException {
 
         RestHighLevelClient client = Connection.getConnectionClient();
-        BulkRequest request = (sourceLabel == null ? buildNumericRequest(projectID, evaluationDate, relation, sourceID,
-                targetID, value, weight, targetValue) : buildBNRequest(projectID, evaluationDate, relation, sourceID,
-                targetID, value, targetValue, sourceLabel));
+        BulkRequest request = new BulkRequest();
+
+        for (int i = 0; i < factorID.length; i++) {
+            String sourceID = String.join("-", projectID, factorID[i], evaluationDate.toString());
+            String targetID = String.join("-", projectID, strategicIndicatorID, evaluationDate.toString());
+            String relation = String.join("-", projectID, factorID[i]) + "->" +
+                    String.join("-", strategicIndicatorID, evaluationDate.toString());
+
+            IndexRequest ir = buildBulkWriteRequest(projectID, evaluationDate, relation, sourceID, targetID,
+                    safeGetFromDoubleArray(sourceValue, i), safeGetFromStringArray(sourceCategories, i),
+                    safeGetFromDoubleArray(weight, i), targetValue);
+            request.add(ir);
+        }
 
         BulkResponse bulkresponse = client.bulk(request);
         return !bulkresponse.hasFailures();
     }
 
-    public static BulkRequest buildNumericRequest(String projectID, LocalDate evaluationDate, String relation,
-                                                  String sourceID, String targetID, double value,
-                                                  double weight, String targetValue) throws IOException {
-        BulkRequest request = new BulkRequest();
-        request.add(new IndexRequest(getRelationsIndex(projectID), RELATIONS_TYPE, relation)
+    public static IndexRequest buildBulkWriteRequest(String projectID, LocalDate evaluationDate, String relation,
+                                                  String sourceID, String targetID, double value, String sourceCategory,
+                                                     double weight, String targetValue) throws IOException {
+        return new IndexRequest(getRelationsIndex(projectID), RELATIONS_TYPE, relation)
                 .source(jsonBuilder()
                         .startObject()
                         .field(EVALUATION_DATE, evaluationDate)
@@ -381,33 +427,12 @@ public class Queries {
                         .field(SOURCEID, sourceID)
                         .field(SOURCETYPE, FACTOR_TYPE)
                         .field(TARGETID, targetID)
-                        .field(TARGETTPYE, DASHBOARDINDICATORS)
+                        .field(TARGETTPYE, STRATEGIC_INDICATOR_TYPE)
                         .field(VALUE, value)
-                        .field(WEIGHT, weight)
+                        .field(WEIGHT, weight)                                //0 IF SI IS BN
                         .field(TARGETVALUE, targetValue)
-                        .endObject()));
-        return request;
-    }
-
-    public static BulkRequest buildBNRequest(String projectID, LocalDate evaluationDate, String relation,
-                                                  String sourceID, String targetID, double value,
-                                                  String targetValue, String sourceLabel) throws IOException {
-        BulkRequest request = new BulkRequest();
-        request.add(new IndexRequest(getRelationsIndex(projectID), RELATIONS_TYPE, relation)
-                .source(jsonBuilder()
-                        .startObject()
-                        .field(EVALUATION_DATE, evaluationDate)
-                        .field(PROJECT, projectID)
-                        .field(RELATION, relation)
-                        .field(SOURCEID, sourceID)
-                        .field(SOURCETYPE, FACTOR_TYPE)
-                        .field(TARGETID, targetID)
-                        .field(TARGETTPYE, DASHBOARDINDICATORS)
-                        .field(VALUE, value)
-                        .field(TARGETVALUE, targetValue)
-                        .field(SOURCELABEL, sourceLabel)                      //FALTA LOGICA
-                        .endObject()));
-        return request;
+                        .field(SOURCELABEL, sourceCategory)                      //NULL IF SI IS NUMERIC
+                        .endObject());
     }
 
     public static Response getIndexes() throws IOException {

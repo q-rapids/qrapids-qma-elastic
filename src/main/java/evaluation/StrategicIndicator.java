@@ -1,6 +1,11 @@
 package evaluation;
 
 import DTOs.*;
+import DTOs.Relations.RelationDTO;
+import DTOs.Relations.SourceRelationDTO;
+import DTOs.Relations.TargetRelationDTO;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
 import util.Common;
 import util.Constants;
 import util.FormattedDates;
@@ -12,9 +17,12 @@ import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+
+import static util.Queries.getLatestRelationsDate;
 
 public class StrategicIndicator {
     private static Map<String, String> IDNames;
@@ -130,17 +138,6 @@ public class StrategicIndicator {
 
     }
 
-    public static void setStrategicIndicatorFactorRelation(String projectID, String factorID, String strategicIndicatorID,
-                                                           LocalDate evaluationDate, double weight, double value,
-                                                           String sourceLabel, String targetValue) throws IOException {
-
-        String sourceID = String.join("-", projectID, factorID, evaluationDate.toString());
-        String targetID = String.join("-", projectID, strategicIndicatorID, evaluationDate.toString());
-        String relation = String.join("-", projectID, factorID) + "->" +
-                String.join("-", strategicIndicatorID, evaluationDate.toString());
-        Queries.setFactorSIRelationIndex
-                (projectID, evaluationDate, relation, sourceID, targetID, value, weight, targetValue, sourceLabel);
-    }
 
     /**
      * This method returns the list of the strategic indicators. For each strategic indicator, it returns the list of

@@ -9,8 +9,8 @@ public class Constants {
 
     //content of the field _type of the index
     static final String METRIC_TYPE = "metrics";
-    static final String FACTOR_TYPE = "factors";
-    static final String STRATEGIC_INDICATOR_TYPE = "strategic_indicators";
+    public static final String FACTOR_TYPE = "factors";
+    public static final String STRATEGIC_INDICATOR_TYPE = "strategic_indicators";
     static final String RELATIONS_TYPE = "relations";
 
     //FIELDS//
@@ -18,8 +18,8 @@ public class Constants {
     public static final String NAME = "name";
     static final String DESCRIPTION = "description";
     // related to the evaluation
-    static final String EVALUATION_DATE = "evaluationDate";
-    static final String VALUE = "value";
+    public static final String EVALUATION_DATE = "evaluationDate";
+    public static final String VALUE = "value";
     static final String DATA_SOURCE = "datasource";
     static final String PROJECT = "project";                    // project being evaluated         (new v1.0)
     static final String RATIONALE = "info";                     // explanaiton of the element value  (new v1.0)
@@ -28,15 +28,14 @@ public class Constants {
                                                                 // maximum difference (in days) when there is
                                                                 // difference evaluation dates between the SI and Factor
     // related to the relations
-    static final String RELATION = "relation";
-    static final String SOURCEID = "sourceId";
-    static final String SOURCETYPE = "sourceType";
-    static final String TARGETID = "targetId";
-    static final String TARGETTPYE = "targetType";
-    static final String WEIGHT = "weight";
-    static final String TARGETVALUE = "targetValue";
-    static final String SOURCELABEL = "sourceLabel";
-    static final String DASHBOARDINDICATORS = "dashboardindicator";
+    public static final String RELATION = "relation";
+    public static final String SOURCEID = "sourceId";
+    public static final String SOURCETYPE = "sourceType";
+    public static final String TARGETID = "targetId";
+    public static final String TARGETTPYE = "targetType";
+    public static final String WEIGHT = "weight";
+    public static final String TARGETVALUE = "targetValue";
+    public static final String SOURCELABEL = "sourceLabel";
 
     //INDEXES//
     public static String PATH = "";             // public, it is accessed from outside of the package

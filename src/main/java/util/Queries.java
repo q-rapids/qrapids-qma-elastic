@@ -132,6 +132,28 @@ public class Queries {
         return getLatest(QMLevel, projectId,"all");
     }
 
+    public static SearchResponse getLatestElement(String projectId, QMLevel qmLevel, String elementId) throws IOException {
+        String group = getIDtoGroup(qmLevel);
+        RestHighLevelClient client = Connection.getConnectionClient();
+        return client.search(new SearchRequest(getIndex(projectId, qmLevel))
+                .source(new SearchSourceBuilder()
+                        .query(QueryBuilders.matchQuery(group, elementId))
+                        .size(0)
+                        .aggregation(
+                                AggregationBuilders.terms("IDGroup").field(group).size(10000)
+                                        .subAggregation(
+                                                AggregationBuilders.topHits("latest")
+                                                        .sort(EVALUATION_DATE, SortOrder.DESC)
+                                                        .explain(true)
+                                                        .size(1)
+                                        )
+                        )
+                )
+
+        );
+    }
+
+
     private static String getIndex(String projectId, QMLevel QMLevel) {
         String index="";
         switch (QMLevel) {

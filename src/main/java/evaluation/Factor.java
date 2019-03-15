@@ -43,6 +43,31 @@ public class Factor {
     }
 
     /**
+     * This method returns the last evaluation of the factor passed as a parameter. The evaluation contains the evaluation
+     * date and value.
+     *
+     * @param projectId identifier of the project
+     * @param factorId identifier of the factor
+     *
+     * @return Factor evaluation
+     * @throws IOException
+     */
+    public static FactorEvaluationDTO getSingleEvaluation(String projectId, String factorId) throws IOException {
+        List<FactorEvaluationDTO> ret;
+        FactorEvaluationDTO factorEvaluationDTO = null;
+
+        SearchResponse sr = Queries.getLatestElement(projectId, Constants.QMLevel.factors, factorId);
+        Terms agg = sr.getAggregations().get("IDGroup");
+        ret = Common.processFactorsBuckets(agg);
+
+        if (!ret.isEmpty()) {
+            factorEvaluationDTO = ret.get(0);
+        }
+
+        return factorEvaluationDTO;
+    }
+
+    /**
      * This method returns the list of the factors and the evaluations belonging to a specific period defined by the
      * parameters from and to. The evaluation contains the evaluation date and value.
      *

@@ -49,6 +49,31 @@ public class StrategicIndicator {
     }
 
     /**
+     * This method returns the last evaluation of the strategic indicator passed as a parameter. The evaluation contains the evaluation
+     * date and value.
+     *
+     * @param projectId identifier of the project
+     * @param strategicIndicatorId identifier of the strategic indicator
+     *
+     * @return Strategic indicator evaluation
+     * @throws IOException
+     */
+    public static StrategicIndicatorEvaluationDTO getSingleEvaluation(String projectId, String strategicIndicatorId) throws IOException {
+        List<StrategicIndicatorEvaluationDTO> ret;
+        StrategicIndicatorEvaluationDTO strategicIndicatorEvaluationDTO = null;
+
+        SearchResponse sr = Queries.getLatestElement(projectId, Constants.QMLevel.strategic_indicators, strategicIndicatorId);
+        Terms agg = sr.getAggregations().get("IDGroup");
+        ret = Common.processStrategicIndicatorsBuckets(agg);
+
+        if (!ret.isEmpty()) {
+            strategicIndicatorEvaluationDTO = ret.get(0);
+        }
+
+        return strategicIndicatorEvaluationDTO;
+    }
+
+    /**
      * This method returns the list of the strategic indicators and the evaluations belonging to the specific period
      * defined by the parameters from and to. The evaluation contains the evaluation date and value.
      *

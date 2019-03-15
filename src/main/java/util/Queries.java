@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.Map;
 
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
+import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
+import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 import static util.Constants.*;
 
 public class Queries {
@@ -152,7 +154,6 @@ public class Queries {
 
         );
     }
-
 
     private static String getIndex(String projectId, QMLevel QMLevel) {
         String index="";
@@ -466,6 +467,29 @@ public class Queries {
         System.out.println(query);
         return client.performRequest("GET",query, params);
     }
+
+
+
+	public static SearchResponse getFactorMetricsRelations( String projectId, String evaluationDate ) throws IOException {
+		RestHighLevelClient client = Connection.getConnectionClient();
+
+		return client.search(
+			new SearchRequest( INDEX_RELATIONS + "." + projectId )
+				.source(
+					new SearchSourceBuilder()
+						.size(1000)
+	                	.query(
+                			boolQuery()
+                				.must( termQuery(PROJECT, projectId) )
+                				.must( termQuery(EVALUATION_DATE, evaluationDate) )
+                				.must( termQuery(TARGETTPYE, "factors") )
+	                	)
+
+	            )
+		);
+
+	}
+
 
 }
 

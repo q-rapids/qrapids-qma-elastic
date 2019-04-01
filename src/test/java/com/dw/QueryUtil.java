@@ -12,7 +12,9 @@ import evaluation.StrategicIndicator;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Hello world!
@@ -48,6 +50,31 @@ class QueryUtil {
 //              projectId=projects.get(0);
 //          else
 //              projectId="default";
+
+
+            //SI UTILS
+            System.err.println("-- FACTORS X - getObservedConfigurations");
+            String[] factors = {"codequality", "qualityissuespecification", "softwarestability"};
+            String[] categories = {"Very Low", "Low", "Medium", "High", "Very High"};//{"Low", "Medium", "High"};
+            float[] ranges = {0.45f, 0.7f, 0.85f, 0.9f};
+
+            //DISCRETIZATION
+            double[] equalWidthIntervals = Factor.makeEqualWidthIntervals(ranges.length);
+            double[] equalFrequencyIntervals = Factor.makeEqualFrequencyIntervals(ranges.length, projectId, factors, dateFrom, dateTo);
+
+            //OBSERVED SCENARIOS
+            Map<List<String>, Integer> observedCombinations = Factor.getCommonConfigurations(projectId, factors,
+                    categories, ranges, dateFrom, dateTo);
+            System.out.println(Arrays.toString(factors) + " : findings");
+            observedCombinations.forEach((key, value) -> System.out.println(key + " : " + value));
+
+            //FREQUENCY QUANTIFICATION
+            Map<String, Map<String, Float>> factorsFrequencies = Factor.getFrequencyQuantification(projectId, factors, ranges, dateFrom, dateTo);
+            factorsFrequencies.forEach((factor, mapfactorFreq) -> {
+                System.out.println("FACTOR " + factor + " freqüency quantification:");
+                mapfactorFreq.forEach((interval, percentage) -> System.out.println(interval + " : " + percentage));
+            });
+
 
             //RELATIONS
             //NUMERIC

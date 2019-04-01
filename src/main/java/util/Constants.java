@@ -4,7 +4,7 @@ package util;
 public class Constants {
     //IDs FOR ELEMENT AGGREGATION, the name of the attribute that is used as element ID
     static final String METRIC_ID = "metric";
-    static final String FACTOR_ID = "factor";
+    public static final String FACTOR_ID = "factor";
     static final String STRATEGIC_INDICATOR_ID = "strategic_indicator";
 
     //content of the field _type of the index

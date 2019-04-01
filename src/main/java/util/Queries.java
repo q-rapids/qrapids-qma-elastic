@@ -17,11 +17,10 @@ import org.elasticsearch.client.Response;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.TermQueryBuilder;
-import org.elasticsearch.index.query.WildcardQueryBuilder;
+import org.elasticsearch.index.query.*;
+import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.bucket.range.RangeAggregationBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 
@@ -108,6 +107,67 @@ public class Queries {
     private static String getRelationsIndex(String projectId)
     {
         return getIndexPath(INDEX_RELATIONS, projectId);
+    }
+
+    public static SearchResponse getFrequencies(String projectId,Constants.QMLevel QMLevel, String name,
+                                                LocalDate dateFrom, LocalDate dateTo, float[] ranges) throws IOException {
+        RestHighLevelClient client = Connection.getConnectionClient();
+        return client.search(new SearchRequest(getIndex(projectId, QMLevel))
+                .source(new SearchSourceBuilder()
+                        .query(QueryBuilders.boolQuery()
+                                .must(new TermQueryBuilder(Constants.FACTOR_ID, name))
+                                .filter(QueryBuilders
+                                        .rangeQuery(Constants.EVALUATION_DATE)
+                                        .gte(dateFrom)
+                                        .lte(dateTo)))
+                        .size(0)
+                        .aggregation(getRangeAggregation(ranges)))
+        );
+    }
+
+    public static SearchResponse getFactorsAggregations(String projectId, String[] factorsNames,
+                                                        LocalDate dateFrom, LocalDate dateTo) throws IOException {
+        RestHighLevelClient client = Connection.getConnectionClient();
+        return client.search(new SearchRequest(getIndex(projectId, Constants.QMLevel.factors))
+                .source(new SearchSourceBuilder()
+                        .fetchSource(Constants.VALUE, null)
+                        .sort(Constants.VALUE, SortOrder.ASC)
+                        .query(QueryBuilders.boolQuery()
+                                .should(new TermsQueryBuilder(Constants.FACTOR_ID, factorsNames)).minimumShouldMatch(1)
+                                .filter(QueryBuilders
+                                        .rangeQuery(Constants.EVALUATION_DATE)
+                                        .gte(dateFrom)
+                                        .lte(dateTo)))
+                        .size(10000))
+        );
+    }
+
+    public static SearchResponse getFilteredDay(String projectId, Constants.QMLevel QMLevel, LocalDate day,
+                                                String[] names) throws IOException {
+        TermQueryBuilder mustDay = new TermQueryBuilder(Constants.EVALUATION_DATE, FormattedDates.formatDate(day));
+        BoolQueryBuilder shouldNames = QueryBuilders.boolQuery();
+        for (String name : names) {
+            shouldNames.should(new TermQueryBuilder(Constants.FACTOR_ID, name));
+        }
+
+        RestHighLevelClient client = Connection.getConnectionClient();
+        return client.search((new SearchRequest(getIndex(projectId, QMLevel))
+                .source(new SearchSourceBuilder()
+                        .query(QueryBuilders.boolQuery()
+                                .must(mustDay)
+                                .must(shouldNames)))));
+    }
+
+    public static AggregationBuilder getRangeAggregation(float[] ranges) {
+        RangeAggregationBuilder range = AggregationBuilders.range("categoryranges").field("value")
+                //.addUnboundedTo(ranges[0]);
+                .addRange(0f, ranges[0]);
+        for (int i = 0; i < ranges.length-1; i++ ) {
+            range.addRange(ranges[i], ranges[i+1]);
+        }
+        //range.addUnboundedFrom(ranges[ranges.length-1]);
+        range.addRange(ranges[ranges.length-1], 1f);
+        return range;
     }
 
     public static SearchResponse getLatest(QMLevel QMLevel, String projectId, String parent) throws IOException {

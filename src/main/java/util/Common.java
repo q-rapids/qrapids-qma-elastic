@@ -130,7 +130,14 @@ public class Common {
                 ArrayList allEstimations = Queries.getArrayListFromMap(result, Constants.ESTIMATION);
                 if (allEstimations != null) {
                     for (Object e : allEstimations) {
-                        estimation.add(new QuadrupletDTO<Integer, String, Float, Float>(Queries.getIntFromMap((Map<String, Object>) e, Constants.ESTIMATION_ID), Queries.getStringFromMap((Map<String, Object>) e, Constants.ESTIMATION_LABEL), Queries.getFloatFromMap((Map<String, Object>) e, Constants.ESTIMATION_VALUE), null));
+                        Float upperThreshold;
+                        try {
+                            upperThreshold = Queries.getFloatFromMap((Map<String, Object>) e, Constants.ESTIMATION_UPPER_THRESHOLD);
+                        }
+                        catch (NumberFormatException nfe) {
+                            upperThreshold = null;
+                        }
+                        estimation.add(new QuadrupletDTO<Integer, String, Float, Float>(Queries.getIntFromMap((Map<String, Object>) e, Constants.ESTIMATION_ID), Queries.getStringFromMap((Map<String, Object>) e, Constants.ESTIMATION_LABEL), Queries.getFloatFromMap((Map<String, Object>) e, Constants.ESTIMATION_VALUE), upperThreshold));
                     }
 
                     estimations.add(new EstimationEvaluationDTO(estimation));

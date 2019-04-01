@@ -134,6 +134,27 @@ public class Queries {
         return getLatest(QMLevel, projectId,"all");
     }
 
+    public static SearchResponse getLatestElement(String projectId, QMLevel qmLevel, String elementId) throws IOException {
+        String group = getIDtoGroup(qmLevel);
+        RestHighLevelClient client = Connection.getConnectionClient();
+        return client.search(new SearchRequest(getIndex(projectId, qmLevel))
+                .source(new SearchSourceBuilder()
+                        .query(QueryBuilders.matchQuery(group, elementId))
+                        .size(0)
+                        .aggregation(
+                                AggregationBuilders.terms("IDGroup").field(group).size(10000)
+                                        .subAggregation(
+                                                AggregationBuilders.topHits("latest")
+                                                        .sort(EVALUATION_DATE, SortOrder.DESC)
+                                                        .explain(true)
+                                                        .size(1)
+                                        )
+                        )
+                )
+
+        );
+    }
+
     private static String getIndex(String projectId, QMLevel QMLevel) {
         String index="";
         switch (QMLevel) {
@@ -446,29 +467,29 @@ public class Queries {
         System.out.println(query);
         return client.performRequest("GET",query, params);
     }
-    
-    
-    
+
+
+
 	public static SearchResponse getFactorMetricsRelations( String projectId, String evaluationDate ) throws IOException {
 		RestHighLevelClient client = Connection.getConnectionClient();
-	
+
 		return client.search(
 			new SearchRequest( INDEX_RELATIONS + "." + projectId )
 				.source(
 					new SearchSourceBuilder()
 						.size(1000)
-	                	.query( 
+	                	.query(
                 			boolQuery()
                 				.must( termQuery(PROJECT, projectId) )
                 				.must( termQuery(EVALUATION_DATE, evaluationDate) )
                 				.must( termQuery(TARGETTPYE, "factors") )
 	                	)
-	                	
+
 	            )
 		);
 
 	}
-	
+
 
 }
 

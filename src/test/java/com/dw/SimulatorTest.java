@@ -14,7 +14,7 @@ public class SimulatorTest {
 
 		try {
 
-			Connection.initConnection("bigdata-cl09.iese.de", 9200, "", "", "", "");
+			Connection.initConnection("", 0, "", "", "", ""); //set correct values before running tests.
 			
 			
 			// create a simulation model for projectId and evaluationDate

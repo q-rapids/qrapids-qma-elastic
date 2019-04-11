@@ -26,7 +26,7 @@ public class Relations {
     }
 
     public static ArrayList<RelationDTO> getRelations(String projectID, LocalDate dateTo) throws IOException {
-        LocalDate dateFrom = dateTo.minusDays(15);
+        LocalDate dateFrom = dateTo.minusDays(0);
         ArrayList<RelationDTO> relationDTO = new ArrayList<>();
 
         SearchResponse responseRelations = Queries.getRelations(dateFrom, dateTo, projectID);

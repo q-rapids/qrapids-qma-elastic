@@ -15,6 +15,16 @@ This library connects to the ElasticSearch and provides assessment of the qualit
 | Frameworks           | Gradle                 |
 | External libraries   | ElasticSearch Java API |
 
+## How to build
+This is a Gradle project. You can use any IDE that supports Gradle to build it, or alternatively you can use the command line using the Gradle wrapper with the command *__gradlew__* if you don't have Gradle installed on your machine or with the command *__gradle__* if you do, followed by the task *__jar__*.
+
+```
+# Example: using Gradle wrapper to build with dependencies
+cd qrapids-forecast
+gradlew jar
+```
+After the build is done the JAR file can be found at the __build/libs__ directory
+
 ## Documentation
 You can find the user documentation in the repository [Wiki](https://github.com/q-rapids/qrapids-qma-elastic/wiki) and the technical documentation of the API [here](https://q-rapids.github.io/qrapids-qma-elastic).
 

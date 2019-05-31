@@ -34,6 +34,7 @@ import java.util.Map;
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 import static org.elasticsearch.index.query.QueryBuilders.boolQuery;
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
+import static util.BayesUtils.QMtoID;
 import static util.Constants.*;
 
 public class Queries {
@@ -110,12 +111,12 @@ public class Queries {
     }
 
     public static SearchResponse getFrequencies(String projectId,Constants.QMLevel QMLevel, String name,
-                                                LocalDate dateFrom, LocalDate dateTo, float[] ranges) throws IOException {
+                                                LocalDate dateFrom, LocalDate dateTo, double[] ranges) throws IOException {
         RestHighLevelClient client = Connection.getConnectionClient();
         return client.search(new SearchRequest(getIndex(projectId, QMLevel))
                 .source(new SearchSourceBuilder()
                         .query(QueryBuilders.boolQuery()
-                                .must(new TermQueryBuilder(Constants.FACTOR_ID, name))
+                                .must(new TermQueryBuilder(QMtoID(QMLevel), name))
                                 .filter(QueryBuilders
                                         .rangeQuery(Constants.EVALUATION_DATE)
                                         .gte(dateFrom)
@@ -125,15 +126,15 @@ public class Queries {
         );
     }
 
-    public static SearchResponse getFactorsAggregations(String projectId, String[] factorsNames,
+    public static SearchResponse getElementsAggregations(String projectId, Constants.QMLevel QMType, String[] elementNames,
                                                         LocalDate dateFrom, LocalDate dateTo) throws IOException {
         RestHighLevelClient client = Connection.getConnectionClient();
-        return client.search(new SearchRequest(getIndex(projectId, Constants.QMLevel.factors))
+        return client.search(new SearchRequest(getIndex(projectId, QMType))
                 .source(new SearchSourceBuilder()
                         .fetchSource(Constants.VALUE, null)
                         .sort(Constants.VALUE, SortOrder.ASC)
                         .query(QueryBuilders.boolQuery()
-                                .should(new TermsQueryBuilder(Constants.FACTOR_ID, factorsNames)).minimumShouldMatch(1)
+                                .should(new TermsQueryBuilder(QMtoID(QMType), elementNames)).minimumShouldMatch(1)
                                 .filter(QueryBuilders
                                         .rangeQuery(Constants.EVALUATION_DATE)
                                         .gte(dateFrom)
@@ -147,7 +148,7 @@ public class Queries {
         TermQueryBuilder mustDay = new TermQueryBuilder(Constants.EVALUATION_DATE, FormattedDates.formatDate(day));
         BoolQueryBuilder shouldNames = QueryBuilders.boolQuery();
         for (String name : names) {
-            shouldNames.should(new TermQueryBuilder(Constants.FACTOR_ID, name));
+            shouldNames.should(new TermQueryBuilder(QMtoID(QMLevel), name));
         }
 
         RestHighLevelClient client = Connection.getConnectionClient();
@@ -158,7 +159,7 @@ public class Queries {
                                 .must(shouldNames)))));
     }
 
-    public static AggregationBuilder getRangeAggregation(float[] ranges) {
+    public static AggregationBuilder getRangeAggregation(double[] ranges) {
         RangeAggregationBuilder range = AggregationBuilders.range("categoryranges").field("value")
                 //.addUnboundedTo(ranges[0]);
                 .addRange(0f, ranges[0]);
@@ -166,7 +167,7 @@ public class Queries {
             range.addRange(ranges[i], ranges[i+1]);
         }
         //range.addUnboundedFrom(ranges[ranges.length-1]);
-        range.addRange(ranges[ranges.length-1], 1f);
+        range.addRange(ranges[ranges.length-1], 1.01f);
         return range;
     }
 

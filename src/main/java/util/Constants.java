@@ -40,7 +40,7 @@ public class Constants {
     //INDEXES//
     public static String PATH = "";             // public, it is accessed from outside of the package
     public static String INDEX_PREFIX = "poc."; // public, it is accessed from outside of the package
-    static final String INDEX_STRATEGIC_INDICATORS = "strategic_indicators";
+    public static final String INDEX_STRATEGIC_INDICATORS = "strategic_indicators";
     public static final String INDEX_FACTORS = "factors";
     public static final String INDEX_METRICS = "metrics";
     public static final String INDEX_RELATIONS = "relations";

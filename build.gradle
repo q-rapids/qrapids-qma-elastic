@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'maven'
 
 group = 'com.dw'
-version = '0.11'
+version = '0.13'
 
 description = """qrapids-qma-elastic"""
 

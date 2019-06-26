@@ -84,7 +84,10 @@ public class Model {
 		setEvaluationDTO(value, medto);
 
 		// factors influenced by the metric
-		this.changeFactors.addAll(influencedFactors.get(metricId));		
+		Set<String> factors = influencedFactors.get(metricId);
+		if (factors != null) {
+			this.changeFactors.addAll(factors);
+		}
 	}
 	
 	/**

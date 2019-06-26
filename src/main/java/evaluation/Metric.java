@@ -81,4 +81,29 @@ public class Metric {
         return ret;
     }
 
+    /**
+     * This method returns the last evaluation of the metric passed as a parameter. The evaluation contains the evaluation
+     * date and value.
+     *
+     * @param projectId identifier of the project
+     * @param metricId identifier of the metric
+     *
+     * @return Metric evaluation
+     * @throws IOException
+     */
+    public static MetricEvaluationDTO getSingleEvaluation(String projectId, String metricId, LocalDate from, LocalDate to) throws IOException {
+        List<MetricEvaluationDTO> ret;
+        MetricEvaluationDTO metricEvaluationDTO = null;
+
+        SearchResponse sr = Queries.getRangedElement(projectId, Constants.QMLevel.metrics, metricId, from, to);
+        Terms agg = sr.getAggregations().get("IDGroup");
+        ret = Common.processMetricsBuckets(agg);
+
+        if (!ret.isEmpty()) {
+            metricEvaluationDTO = ret.get(0);
+        }
+
+        return metricEvaluationDTO;
+    }
+
 }

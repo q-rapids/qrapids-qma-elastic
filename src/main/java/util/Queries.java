@@ -277,6 +277,33 @@ public class Queries {
         return getRanged(QMLevel, projectId,"all", dateFrom, dateTo);
     }
 
+    public static SearchResponse getRangedElement(String projectId, QMLevel qmLevel, String elementId, LocalDate from, LocalDate to) throws IOException {
+        String group = getIDtoGroup(qmLevel);
+        RestHighLevelClient client = Connection.getConnectionClient();
+        return client.search(new SearchRequest(getIndex(projectId, qmLevel))
+                .source(new SearchSourceBuilder()
+                        .query(QueryBuilders
+                                .boolQuery()
+                                .must(new TermQueryBuilder(group, elementId))
+                                .filter(QueryBuilders
+                                        .rangeQuery(EVALUATION_DATE)
+                                        .gte(from)
+                                        .lte(to)))
+                        .size(0)
+                        .aggregation(
+                                AggregationBuilders.terms("IDGroup").field(group).size(10000)
+                                        .subAggregation(
+                                                AggregationBuilders.topHits("latest")
+                                                        .sort(EVALUATION_DATE, SortOrder.DESC)
+                                                        .explain(true)
+                                                        .size(10000)
+                                        )
+                        )
+                )
+
+        );
+    }
+
     public static SearchResponse getRelations(LocalDate dateFrom, LocalDate dateTo, String projectId) throws IOException {
         RestHighLevelClient client = Connection.getConnectionClient();
         return client.search(new SearchRequest(getRelationsIndex(projectId))

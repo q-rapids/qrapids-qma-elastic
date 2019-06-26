@@ -29,7 +29,7 @@ class QueryUtil {
         String strategicIndicatorQ = "productquality";
         String metricQ = "runtimeexceptions";
 
-        String ip = "*"; //Set value before test
+        String ip = "bigdata-cl09.iese.de"; //Set value before test
         int port = 9200; //Set value before test
         String path= "";
         String prefix = "";
@@ -92,6 +92,8 @@ class QueryUtil {
             List<MetricEvaluationDTO> allMetricsEvaluationRanged = Metric.getEvaluations(projectId, dateFrom, dateTo);
             System.err.println("-- METRIC 3 ");
             MetricEvaluationDTO latestMetricEvaluation = Metric.getSingleEvaluation(projectId, metricQ);
+            System.err.println("-- METRIC 4 ");
+            MetricEvaluationDTO singleMetricEvaluationRanged = Metric.getSingleEvaluation("modelio38", "duplication", LocalDate.of(2019,05, 12), LocalDate.of(2019,05, 26));
 
             //CLASS: STRATEGIC INDICATOR
             System.err.println("-- STRATEGIC INDICATOR 1");

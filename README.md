@@ -26,7 +26,7 @@ gradlew jar
 After the build is done the JAR file can be found at the __build/libs__ directory
 
 ## Documentation
-You can find the user documentation in the repository [Wiki](https://github.com/q-rapids/qrapids-qma-elastic/wiki) and the technical documentation of the API [here](https://q-rapids.github.io/qrapids-qma-elastic).
+You can find the technical documentation of the API [here](https://q-rapids.github.io/qrapids-qma-elastic).
 
 ## Contributing
 You can find guidelines to contribute to the project in the [Q-Rapids repository](https://github.com/q-rapids/q-rapids/blob/master/CONTRIBUTING.md).

@@ -2,6 +2,7 @@ package DTOs;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 
 public class EvaluationDTO {
     private String ID;
@@ -9,6 +10,8 @@ public class EvaluationDTO {
     private LocalDate evaluationDate;
     private Float value;
     private String rationale;
+    private int mismatchDays;
+    private ArrayList<String> missingElements;
 
     public EvaluationDTO() {
     }
@@ -93,5 +96,22 @@ public class EvaluationDTO {
     public String getRationale() {
         return rationale;
     }
+
+    public int getMismatchDays() {
+        return mismatchDays;
+    }
+
+    public void setMismatchDays(int mismatchDays) {
+        this.mismatchDays = mismatchDays;
+    }
+
+    public ArrayList<String> getMissingElements() {
+        return missingElements;
+    }
+
+    public void setMissingElements(ArrayList<String> missingElements) {
+        this.missingElements = missingElements;
+    }
+
 }
 

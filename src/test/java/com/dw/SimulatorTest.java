@@ -18,17 +18,17 @@ public class SimulatorTest {
 			
 			
 			// create a simulation model for projectId and evaluationDate
-			Model model = Simulator.createModel( "modelio38", "2019-01-14");
+			Model model = Simulator.createModel( "test", "2019-01-14");
 			
 			Simulator.factorPrinter( model.getFactors() );
 			
 			// simulate effects of changing a metric evaluation value 
-			model.setMetric("modelio38-bugcorrection-2019-01-14", 0.5);
+			model.setMetric("test-bugcorrection-2019-01-14", 0.5);
 			Collection<FactorEvaluationDTO> factors = model.simulate();
 			
 			Simulator.factorPrinter( factors );
 			
-			model.setMetric("modelio38-bugcorrection-2019-01-14", 0.0);
+			model.setMetric("test-bugcorrection-2019-01-14", 0.0);
 			factors = model.simulate();
 			
 			Simulator.factorPrinter( factors );

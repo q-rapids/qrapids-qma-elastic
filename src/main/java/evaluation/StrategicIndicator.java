@@ -230,16 +230,13 @@ public class StrategicIndicator {
      * @throws IOException
      */
     public static StrategicIndicatorFactorEvaluationDTO getFactorsEvaluations(String projectId, String strategicIndicatorID) throws IOException {
-
-        Map<String, String> IDNames = getFactorsIDNames(projectId);
-        String strategicIndicatorName = Queries.getStringFromStringMapOrDefault(IDNames, strategicIndicatorID,
-                strategicIndicatorID);
-
         SearchResponse sr = Queries.getLatest( Constants.QMLevel.factors, projectId, strategicIndicatorID);
         Terms agg = sr.getAggregations().get("IDGroup");
         List<FactorEvaluationDTO> factorsEval = Common.processFactorsBuckets(agg);
 
-        return new StrategicIndicatorFactorEvaluationDTO(strategicIndicatorID, strategicIndicatorName, projectId, factorsEval);
+        StrategicIndicatorEvaluationDTO strategicIndicatorEvaluationDTO = getSingleEvaluation(projectId, strategicIndicatorID);
+
+        return new StrategicIndicatorFactorEvaluationDTO(strategicIndicatorEvaluationDTO, factorsEval);
     }
 
     /**
@@ -259,16 +256,13 @@ public class StrategicIndicator {
     public static StrategicIndicatorFactorEvaluationDTO getFactorsEvaluations(String projectId, String strategicIndicatorID,
                                                                               LocalDate from, LocalDate to)
             throws IOException {
-
-        Map<String, String> IDNames = getFactorsIDNames(projectId);
-        String strategicIndicatorName = Queries.getStringFromStringMapOrDefault(IDNames, strategicIndicatorID,
-                strategicIndicatorID);
-
         SearchResponse sr = Queries.getRanged(Constants.QMLevel.factors, projectId, strategicIndicatorID, from,to);
         Terms agg = sr.getAggregations().get("IDGroup");
         List<FactorEvaluationDTO> factorsEval = Common.processFactorsBuckets(agg);
 
-        return new StrategicIndicatorFactorEvaluationDTO(strategicIndicatorID, strategicIndicatorName, projectId, factorsEval);
+        StrategicIndicatorEvaluationDTO strategicIndicatorEvaluationDTO = getSingleEvaluation(projectId, strategicIndicatorID);
+
+        return new StrategicIndicatorFactorEvaluationDTO(strategicIndicatorEvaluationDTO, factorsEval);
     }
 
     /**

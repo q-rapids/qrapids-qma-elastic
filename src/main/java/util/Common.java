@@ -122,6 +122,8 @@ public class Common {
                         Queries.getStringFromMap(result, Constants.VALUE),
                         Queries.getStringFromMap(result, Constants.RATIONALE)
                         );
+                eval.setMismatchDays(Queries.getIntFromMap(result, Constants.DATES_MISMATCH));
+                eval.setMissingElements(Queries.getArrayListFromMap(result, Constants.MISSING_FACTORS));
 
                 evals.add(eval);
 

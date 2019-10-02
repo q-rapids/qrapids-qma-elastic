@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>qrapids-qma-elastic API documentation</title>
+    <style type="text/css">
+        body, html
+        {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+        #content
+        {
+            position:absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            top: 0;
+        }
+        #header
+        {
+            height: 150px;
+            width: 900px;
+            margin: 20px auto;
+            overflow: hidden;
+        }
+        h1, p
+        {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .font_0
+        {
+            font-family: sans-serif;
+            font-weight: bold;
+            font-size: 35px;
+        }
+        .font_1
+        {
+            font-family: sans-serif;
+            font-weight: bold;
+            font-size: 30px;
+        }
+        .font_2
+        {
+            font-family: sans-serif;
+            font-weight: lighter;
+            font-size: 9px;
+        }
+    </style>
+</head>
+<body>
+    <div id="content">
+        <div id="header">
+            <div style="position: relative; width: 139px; height: 139px; float:left">
+                <img style="object-position: 50% center; width: 138px; height: 139px; object-fit: cover;" alt="" data-type="image" src="https://static.wixstatic.com/media/11d1c4_2cc19a9230384021ae9241ac30ecba77~mv2_d_1624_1661_s_2.png/v1/fill/w_138,h_139,al_c,usm_0.66_1.00_0.01/11d1c4_2cc19a9230384021ae9241ac30ecba77~mv2_d_1624_1661_s_2.png">
+            </div>
+            <div style="position: relative; width: 631px; float: left;">
+                <h1 align="center" class="font_0">Q-Rapids</h1>
+                <h1 align="center" class="font_1">Quality-aware rapid software development</h1>
+                <p align="center" class="font_2">This project has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No 732253.</p>
+            </div>
+            <div style="position: relative; width: 130px; height: 80px; float: right">
+                <img style="object-position: 50% center; width: 130px; height: 80px; object-fit: cover;" alt="" data-type="image" src="https://static.wixstatic.com/media/11d1c4_0916dc9585ae45d7b686cdce627595f8~mv2_d_2363_1576_s_2.jpg/v1/fill/w_130,h_80,al_c,q_80,usm_0.66_1.00_0.01/11d1c4_0916dc9585ae45d7b686cdce627595f8~mv2_d_2363_1576_s_2.jpg">
+            </div>
+        </div>
+		<p>
+		<br><br>
+		<h1 align="center">Under Construction!</h1>
+	    
+	    <p class=MsoNormal><span lang=EN-GB>The Q-Rapids quality model is characterised
+by three types of entities: Strategic Indicators, Factors and Metrics. This
+library includes three classes to access to these types of entities. This
+library also allows to access to the information related to how the elements
+has been computed (relations) how this computation can be simulated.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span lang=EN-GB>Following tables contain the method summary
+for these classes and the DTOs used to transfer the data.<o:p></o:p></span></p>
+
+<p class=MsoCaption><a name="_Toc528771937"></a><a name="_Toc505182714"></a><a
+name="_Toc496523846"><span style='mso-bookmark:_Toc505182714'><span
+style='mso-bookmark:_Toc528771937'><span lang=EN-US>Table </span></span></span></a><!--[if supportFields]><span
+style='mso-bookmark:_Toc496523846'><span style='mso-bookmark:_Toc505182714'><span
+style='mso-bookmark:_Toc528771937'></span></span></span><span style='mso-element:
+field-begin'></span><span style='mso-bookmark:_Toc496523846'><span
+style='mso-bookmark:_Toc505182714'><span style='mso-bookmark:_Toc528771937'><span
+lang=EN-US><span style='mso-spacerun:yes'> </span>SEQ Table \* ARABIC <span
+style='mso-element:field-separator'></span></span></span></span></span><![endif]--><span
+style='mso-bookmark:_Toc496523846'><span style='mso-bookmark:_Toc505182714'><span
+style='mso-bookmark:_Toc528771937'><span lang=EN-US><span style='mso-no-proof:
+yes'>9</span></span></span></span></span><!--[if supportFields]><span
+style='mso-bookmark:_Toc496523846'><span style='mso-bookmark:_Toc505182714'><span
+style='mso-bookmark:_Toc528771937'></span></span></span><span style='mso-element:
+field-end'></span><![endif]--><span style='mso-bookmark:_Toc496523846'><span
+style='mso-bookmark:_Toc505182714'><span style='mso-bookmark:_Toc528771937'><span
+lang=EN-US>. <span class=GramE>class</span> <span class=SpellE>StrategicIndicator</span>
+</span></span></span></span><span style='mso-bookmark:_Toc505182714'><span
+style='mso-bookmark:_Toc528771937'><span lang=EN-US>(QMA API)</span></span></span><span
+lang=EN-US><o:p></o:p></span></p>
+
+<table class=Tabladecuadrcula1clara-nfasis11 border=1 cellspacing=0
+ cellpadding=0 width=0 style='width:492.7pt;border-collapse:collapse;
+ border:none;mso-border-alt:solid #BDD6EE .5pt;mso-border-themecolor:accent1;
+ mso-border-themetint:102;mso-yfti-tbllook:1184;mso-padding-alt:0cm 5.4pt 0cm 5.4pt'>
+ <tr style='mso-yfti-irow:-1;mso-yfti-firstrow:yes;mso-yfti-lastfirstrow:yes'>
+  <td width=262 valign=top style='width:191.15pt;border:solid #BDD6EE 1.0pt;
+  mso-border-themecolor:accent1;mso-border-themetint:102;border-bottom:solid #9CC2E5 1.5pt;
+  mso-border-bottom-themecolor:accent1;mso-border-bottom-themetint:153;
+  mso-border-alt:solid #BDD6EE .5pt;mso-border-themecolor:accent1;mso-border-themetint:
+  102;mso-border-bottom-alt:solid #9CC2E5 1.5pt;mso-border-bottom-themecolor:
+  accent1;mso-border-bottom-themetint:153;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+  107%;mso-yfti-cnfc:5'><b><span lang=EN-GB>Method and result<o:p></o:p></span></b></p>
+  </td>
+  <td width=395 valign=top style='width:301.55pt;border-top:solid #BDD6EE 1.0pt;
+  mso-border-top-themecolor:accent1;mso-border-top-themetint:102;border-left:
+  none;border-bottom:solid #9CC2E5 1.5pt;mso-border-bottom-themecolor:accent1;
+  mso-border-bottom-themetint:153;border-right:solid #BDD6EE 1.0pt;mso-border-right-themecolor:
+  accent1;mso-border-right-themetint:102;mso-border-left-alt:solid #BDD6EE .5pt;
+  mso-border-left-themecolor:accent1;mso-border-left-themetint:102;mso-border-alt:
+  solid #BDD6EE .5pt;mso-border-themecolor:accent1;mso-border-themetint:102;
+  mso-border-bottom-alt:solid #9CC2E5 1.5pt;mso-border-bottom-themecolor:accent1;
+  mso-border-bottom-themetint:153;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+  107%;mso-yfti-cnfc:1'><b><span lang=EN-GB>Description<o:p></o:p></span></b></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:0'>
+  <td width=657 colspan=2 valign=top style='width:492.7pt;border:solid #BDD6EE 1.0pt;
+  mso-border-themecolor:accent1;mso-border-themetint:102;border-top:none;
+  mso-border-top-alt:solid #BDD6EE .5pt;mso-border-top-themecolor:accent1;
+  mso-border-top-themetint:102;mso-border-alt:solid #BDD6EE .5pt;mso-border-themecolor:
+  accent1;mso-border-themetint:102;background:#DEEAF6;mso-background-themecolor:
+  accent1;mso-background-themetint:51;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0cm;margin-bottom:.0001pt;
+  text-align:center;line-height:107%;mso-yfti-cnfc:4'><b><span lang=EN-GB>Current
+  Status (only one evaluation per strategic indicator)<o:p></o:p></span></b></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:1'>
+  <td width=262 valign=top style='width:191.15pt;border:solid #BDD6EE 1.0pt;
+  mso-border-themecolor:accent1;mso-border-themetint:102;border-top:none;
+  mso-border-top-alt:solid #BDD6EE .5pt;mso-border-top-themecolor:accent1;
+  mso-border-top-themetint:102;mso-border-alt:solid #BDD6EE .5pt;mso-border-themecolor:
+  accent1;mso-border-themetint:102;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal align=left style='margin-bottom:8.0pt;text-align:left;
+  line-height:107%;mso-yfti-cnfc:4'><span class=SpellE><b><span lang=EN-GB>getEvaluations</span></b></span><b><span
+  lang=EN-GB>() returns <span class=SpellE>StrategicIndicatorEvaluationDTO</span>
+  []<o:p></o:p></span></b></p>
+  </td>
+  <td width=395 valign=top style='width:301.55pt;border-top:none;border-left:
+  none;border-bottom:solid #BDD6EE 1.0pt;mso-border-bottom-themecolor:accent1;
+  mso-border-bottom-themetint:102;border-right:solid #BDD6EE 1.0pt;mso-border-right-themecolor:
+  accent1;mso-border-right-themetint:102;mso-border-top-alt:solid #BDD6EE .5pt;
+  mso-border-top-themecolor:accent1;mso-border-top-themetint:102;mso-border-left-alt:
+  solid #BDD6EE .5pt;mso-border-left-themecolor:accent1;mso-border-left-themetint:
+  102;mso-border-alt:solid #BDD6EE .5pt;mso-border-themecolor:accent1;
+  mso-border-themetint:102;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:8.0pt;line-height:107%'><span
+  lang=EN-GB>This method returns the list of the strategic indicators and the
+  “last” evaluation. The evaluation contains the evaluation date and value<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:2'>
+  <td width=262 valign=top style='width:191.15pt;border:solid #BDD6EE 1.0pt;
+  mso-border-themecolor:accent1;mso-border-themetint:102;border-top:none;
+  mso-border-top-alt:solid #BDD6EE .5pt;mso-border-top-themecolor:accent1;
+  mso-border-top-themetint:102;mso-border-alt:solid #BDD6EE .5pt;mso-border-themecolor:
+  accent1;mso-border-themetint:102;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal align=left style='margin-bottom:8.0pt;text-align:left;
+  line-height:107%;mso-yfti-cnfc:4'><span class=SpellE><b><span lang=EN-GB>getFactorsEvaluations</span></b></span><b><span
+  lang=EN-GB>() returns <span class=SpellE>StrategicIndicatorFactorEvaluationDTO</span>
+  []<o:p></o:p></span></b></p>
+  </td>
+  <td width=395 valign=top style='width:301.55pt;border-top:none;border-left:
+  none;border-bottom:solid #BDD6EE 1.0pt;mso-border-bottom-themecolor:accent1;
+  mso-border-bottom-themetint:102;border-right:solid #BDD6EE 1.0pt;mso-border-right-themecolor:
+  accent1;mso-border-right-themetint:102;mso-border-top-alt:solid #BDD6EE .5pt;
+  mso-border-top-themecolor:accent1;mso-border-top-themetint:102;mso-border-left-alt:
+  solid #BDD6EE .5pt;mso-border-left-themecolor:accent1;mso-border-left-themetint:
+  102;mso-border-alt:solid #BDD6EE .5pt;mso-border-themecolor:accent1;
+  mso-border-themetint:102;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:8.0pt;line-height:107%'><span
+  lang=EN-GB>This method returns the list of the strategic indicators. For each
+  strategic indicator, it returns the list of factors associated to it and
+  their “last” evaluation. The evaluation contains the evaluation date and
+  value.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:3'>
+  <td width=262 valign=top style='width:191.15pt;border:solid #BDD6EE 1.0pt;
+  mso-border-themecolor:accent1;mso-border-themetint:102;border-top:none;
+  mso-border-top-alt:solid #BDD6EE .5pt;mso-border-top-themecolor:accent1;
+  mso-border-top-themetint:102;mso-border-alt:solid #BDD6EE .5pt;mso-border-themecolor:
+  accent1;mso-border-themetint:102;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal align=left style='margin-bottom:8.0pt;text-align:left;
+  line-height:107%;mso-yfti-cnfc:4'><span class=SpellE><b><span lang=EN-GB>getFactorsEvaluations</span></b></span><b><span
+  lang=EN-GB>(id: string) returns <span class=SpellE>FactorEvaluationDTO</span>
+  []<o:p></o:p></span></b></p>
+  </td>
+  <td width=395 valign=top style='width:301.55pt;border-top:none;border-left:
+  none;border-bottom:solid #BDD6EE 1.0pt;mso-border-bottom-themecolor:accent1;
+  mso-border-bottom-themetint:102;border-right:solid #BDD6EE 1.0pt;mso-border-right-themecolor:
+  accent1;mso-border-right-themetint:102;mso-border-top-alt:solid #BDD6EE .5pt;
+  mso-border-top-themecolor:accent1;mso-border-top-themetint:102;mso-border-left-alt:
+  solid #BDD6EE .5pt;mso-border-left-themecolor:accent1;mso-border-left-themetint:
+  102;mso-border-alt:solid #BDD6EE .5pt;mso-border-themecolor:accent1;
+  mso-border-themetint:102;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:8.0pt;line-height:107%'><span
+  lang=EN-GB>This method returns the list of factors associated to the <i
+  style='mso-bidi-font-style:normal'>strategic indicator evaluation</i> passed
+  as a parameter and their “last” evaluation. The evaluation contains the
+  evaluation date and value.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:4'>
+  <td width=262 valign=top style='width:191.15pt;border:solid #BDD6EE 1.0pt;
+  mso-border-themecolor:accent1;mso-border-themetint:102;border-top:none;
+  mso-border-top-alt:solid #BDD6EE .5pt;mso-border-top-themecolor:accent1;
+  mso-border-top-themetint:102;mso-border-alt:solid #BDD6EE .5pt;mso-border-themecolor:
+  accent1;mso-border-themetint:102;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+  text-align:left;line-height:normal;mso-yfti-cnfc:4'><span class=SpellE><b><span
+  lang=EN-GB>setStrategicIndicatorEvaluation</span></b></span><b><span
+  lang=EN-GB>(String <span class=SpellE>projectId</span>, String <span
+  class=SpellE>strategicIndicatorID</span>, String <span class=SpellE>strategicIndicatorName</span>,
+  String <span class=SpellE>strategicIndicatorDescription</span>, Float value, <span
+  class=SpellE>LocalDate</span> <span class=SpellE>evaluationDate</span>, <span
+  class=SpellE>EstimationEvaluationDTO</span> estimation, List&lt;String&gt; <span
+  class=SpellE>missingFactors</span>, long <span class=SpellE>datesMismatch</span>)<o:p></o:p></span></b></p>
+  </td>
+  <td width=395 valign=top style='width:301.55pt;border-top:none;border-left:
+  none;border-bottom:solid #BDD6EE 1.0pt;mso-border-bottom-themecolor:accent1;
+  mso-border-bottom-themetint:102;border-right:solid #BDD6EE 1.0pt;mso-border-right-themecolor:
+  accent1;mso-border-right-themetint:102;mso-border-top-alt:solid #BDD6EE .5pt;
+  mso-border-top-themecolor:accent1;mso-border-top-themetint:102;mso-border-left-alt:
+  solid #BDD6EE .5pt;mso-border-left-themecolor:accent1;mso-border-left-themetint:
+  102;mso-border-alt:solid #BDD6EE .5pt;mso-border-themecolor:accent1;
+  mso-border-themetint:102;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:0cm;margin-bottom:.0001pt;line-height:
+  normal'><span lang=EN-GB>This method stores in the corresponding index the
+  assessment for a concrete strategic indicator for <span class=GramE>an</span>
+  specific date.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:5'>
+  <td width=657 colspan=2 valign=top style='width:492.7pt;border:solid #BDD6EE 1.0pt;
+  mso-border-themecolor:accent1;mso-border-themetint:102;border-top:none;
+  mso-border-top-alt:solid #BDD6EE .5pt;mso-border-top-themecolor:accent1;
+  mso-border-top-themetint:102;mso-border-alt:solid #BDD6EE .5pt;mso-border-themecolor:
+  accent1;mso-border-themetint:102;background:#DEEAF6;mso-background-themecolor:
+  accent1;mso-background-themetint:51;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal align=center style='margin-bottom:0cm;margin-bottom:.0001pt;
+  text-align:center;line-height:107%;mso-yfti-cnfc:4'><b><span lang=EN-GB>Historical
+  Data (more than one evaluation per strategic indicator)<o:p></o:p></span></b></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:6'>
+  <td width=262 valign=top style='width:191.15pt;border:solid #BDD6EE 1.0pt;
+  mso-border-themecolor:accent1;mso-border-themetint:102;border-top:none;
+  mso-border-top-alt:solid #BDD6EE .5pt;mso-border-top-themecolor:accent1;
+  mso-border-top-themetint:102;mso-border-alt:solid #BDD6EE .5pt;mso-border-themecolor:
+  accent1;mso-border-themetint:102;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal align=left style='margin-bottom:8.0pt;text-align:left;
+  line-height:107%;mso-yfti-cnfc:4'><span class=SpellE><b><span lang=EN-GB>getEvaluation</span></b></span><b><span
+  lang=EN-GB>(Date from, Date to) returns <span class=SpellE>StrategicIndicatorEvaluationDTO</span>
+  []<o:p></o:p></span></b></p>
+  </td>
+  <td width=395 valign=top style='width:301.55pt;border-top:none;border-left:
+  none;border-bottom:solid #BDD6EE 1.0pt;mso-border-bottom-themecolor:accent1;
+  mso-border-bottom-themetint:102;border-right:solid #BDD6EE 1.0pt;mso-border-right-themecolor:
+  accent1;mso-border-right-themetint:102;mso-border-top-alt:solid #BDD6EE .5pt;
+  mso-border-top-themecolor:accent1;mso-border-top-themetint:102;mso-border-left-alt:
+  solid #BDD6EE .5pt;mso-border-left-themecolor:accent1;mso-border-left-themetint:
+  102;mso-border-alt:solid #BDD6EE .5pt;mso-border-themecolor:accent1;
+  mso-border-themetint:102;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:8.0pt;line-height:107%'><span
+  lang=EN-GB>This method returns the list of the strategic indicators and the
+  evaluations belonging to the specific period defined by the parameters from
+  and to. The evaluation contains the evaluation date and value.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:7'>
+  <td width=262 valign=top style='width:191.15pt;border:solid #BDD6EE 1.0pt;
+  mso-border-themecolor:accent1;mso-border-themetint:102;border-top:none;
+  mso-border-top-alt:solid #BDD6EE .5pt;mso-border-top-themecolor:accent1;
+  mso-border-top-themetint:102;mso-border-alt:solid #BDD6EE .5pt;mso-border-themecolor:
+  accent1;mso-border-themetint:102;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal align=left style='margin-bottom:8.0pt;text-align:left;
+  line-height:107%;mso-yfti-cnfc:4'><span class=SpellE><b><span lang=EN-GB>getFactorsEvaluations</span></b></span><b><span
+  lang=EN-GB>(Date from, Date to) returns <span class=SpellE>StrategicIndicatorFactorEvaluationDTO</span>[]<o:p></o:p></span></b></p>
+  </td>
+  <td width=395 valign=top style='width:301.55pt;border-top:none;border-left:
+  none;border-bottom:solid #BDD6EE 1.0pt;mso-border-bottom-themecolor:accent1;
+  mso-border-bottom-themetint:102;border-right:solid #BDD6EE 1.0pt;mso-border-right-themecolor:
+  accent1;mso-border-right-themetint:102;mso-border-top-alt:solid #BDD6EE .5pt;
+  mso-border-top-themecolor:accent1;mso-border-top-themetint:102;mso-border-left-alt:
+  solid #BDD6EE .5pt;mso-border-left-themecolor:accent1;mso-border-left-themetint:
+  102;mso-border-alt:solid #BDD6EE .5pt;mso-border-themecolor:accent1;
+  mso-border-themetint:102;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:8.0pt;line-height:107%'><span
+  lang=EN-GB>This method returns the list of the strategic indicators. For each
+  strategic indicator, it returns the list of factors associated to it and
+  their evaluations belonging to the period defined by the parameters <i
+  style='mso-bidi-font-style:normal'>from</i> and <i style='mso-bidi-font-style:
+  normal'>to</i>. The evaluation contains the evaluation date and value.<o:p></o:p></span></p>
+  </td>
+ </tr>
+ <tr style='mso-yfti-irow:8;mso-yfti-lastrow:yes'>
+  <td width=262 valign=top style='width:191.15pt;border:solid #BDD6EE 1.0pt;
+  mso-border-themecolor:accent1;mso-border-themetint:102;border-top:none;
+  mso-border-top-alt:solid #BDD6EE .5pt;mso-border-top-themecolor:accent1;
+  mso-border-top-themetint:102;mso-border-alt:solid #BDD6EE .5pt;mso-border-themecolor:
+  accent1;mso-border-themetint:102;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal align=left style='margin-bottom:8.0pt;text-align:left;
+  line-height:107%;mso-yfti-cnfc:4'><span class=SpellE><b><span lang=EN-GB>getFactorsEvaluations</span></b></span><b><span
+  lang=EN-GB>(id: string, Date from, Date to) returns <span class=SpellE>FactorEvaluationDTO</span>[]<o:p></o:p></span></b></p>
+  </td>
+  <td width=395 valign=top style='width:301.55pt;border-top:none;border-left:
+  none;border-bottom:solid #BDD6EE 1.0pt;mso-border-bottom-themecolor:accent1;
+  mso-border-bottom-themetint:102;border-right:solid #BDD6EE 1.0pt;mso-border-right-themecolor:
+  accent1;mso-border-right-themetint:102;mso-border-top-alt:solid #BDD6EE .5pt;
+  mso-border-top-themecolor:accent1;mso-border-top-themetint:102;mso-border-left-alt:
+  solid #BDD6EE .5pt;mso-border-left-themecolor:accent1;mso-border-left-themetint:
+  102;mso-border-alt:solid #BDD6EE .5pt;mso-border-themecolor:accent1;
+  mso-border-themetint:102;padding:0cm 5.4pt 0cm 5.4pt'>
+  <p class=MsoNormal style='margin-bottom:8.0pt;line-height:107%'><span
+  lang=EN-GB>This method returns the list of factors associated to the <i
+  style='mso-bidi-font-style:normal'>strategic indicator evaluation</i> passed
+  as parameter and their evaluations belonging to the period defined by the
+  parameters <i style='mso-bidi-font-style:normal'>from</i> and <i
+  style='mso-bidi-font-style:normal'>to</i>. The evaluation contains the
+  evaluation date and value.<o:p></o:p></span></p>
+  </td>
+ </tr>
+</table>
+		</p>
+    </div>
+</body>
+</html>

@@ -59,4 +59,26 @@ public class Constants {
     //OTHERS//
     public enum QMLevel {metrics, factors, strategic_indicators, relations}
 
+    //MAPPINGS//
+    static final String STRATEGIC_INDICATORS_MAPPING =
+            "{\n" +
+                "\"mappings\" : {\n" +
+                    "\"" + STRATEGIC_INDICATOR_TYPE + "\" : {\n" +
+                        "\"properties\" : {\n" +
+                            "\"datasource\" : {\"type\" : \"keyword\"},\n" +
+                            "\"dates_mismatch_days\" : {\"type\" : \"long\"},\n" +
+                            "\"description\" : {\"type\" : \"text\"},\n" +
+                            "\"evaluationDate\" : {\"type\" : \"date\"},\n" +
+                            "\"missing_factors\" : {\"type\" : \"text\",\n" +
+                            "\"fields\" : {\"keyword\" : {\"type\" : \"keyword\",\n" +
+                            "\"ignore_above\" : 256}}},\n" +
+                            "\"name\" : {\"type\" : \"keyword\"},\n" +
+                            "\"project\" : {\"type\" : \"keyword\"},\n" +
+                            "\"type\": { \"type\": \"keyword\"},\n" +
+                            "\"strategic_indicator\" : {\"type\" : \"keyword\"},\n" +
+                            "\"value\" : {\"type\" : \"double\"}\n" +
+                        "}\n" +
+                    "}\n" +
+                "}\n" +
+            "}";
 }

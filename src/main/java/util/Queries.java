@@ -4,6 +4,9 @@ import DTOs.EstimationEvaluationDTO;
 import DTOs.EvaluationDTO;
 import DTOs.FactorEvaluationDTO;
 import DTOs.QuadrupletDTO;
+import org.apache.http.HttpEntity;
+import org.apache.http.entity.ContentType;
+import org.apache.http.nio.entity.NStringEntity;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -14,6 +17,7 @@ import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.Response;
+import org.elasticsearch.client.ResponseException;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentBuilder;
@@ -516,6 +520,30 @@ public class Queries {
 		);
 
 	}
+
+    public static boolean prepareSIIndex(String projectID) throws IOException {
+        RestClient lowLevelClient = Connection.getLowLevelConnectionClient();
+        String jsonMapping = STRATEGIC_INDICATORS_MAPPING;
+        String endpoint = "/" + getIndexPath(STRATEGIC_INDICATOR_TYPE, projectID);
+        HttpEntity entity = new NStringEntity(jsonMapping, ContentType.APPLICATION_JSON);
+        Response response = null;
+        try {
+            response = lowLevelClient.performRequest("PUT", endpoint, Collections.emptyMap(), entity);
+            if (response.getStatusLine().getStatusCode() != 200) {
+                throw new ResponseException(response);
+            } else {
+                System.out.println("INDEX CREATED: " + endpoint);
+                return true;
+            }
+        } catch (ResponseException e) {
+            if (e.getMessage().contains("already exists")) {
+                System.out.println("INDEX ALREADY EXISTS: " + endpoint);
+                return false;
+            } else {
+                throw e;
+            }
+        }
+    }
 
 
 }

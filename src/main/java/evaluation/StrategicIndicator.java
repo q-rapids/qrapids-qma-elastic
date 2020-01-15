@@ -136,6 +136,7 @@ public class StrategicIndicator {
                                                                  String strategicIndicatorName,
                                                                  String strategicIndicatorDescription,
                                                                  Float value,
+                                                                 String info,
                                                                  LocalDate evaluationDate,
                                                                  EstimationEvaluationDTO estimation,
                                                                  List<String> missingFactors,
@@ -155,6 +156,7 @@ public class StrategicIndicator {
                 strategicIndicatorDescription,
                 evaluationDate,
                 value,
+                info,
                 estimation,
                 missingFactors,
                 datesMismatch);

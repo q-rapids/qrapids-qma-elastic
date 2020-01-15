@@ -338,6 +338,7 @@ public class Queries {
                                                             String strategicIndicatorDescription,
                                                             LocalDate evaluationDate,
                                                             Float value,
+                                                            String info,
                                                             EstimationEvaluationDTO estimation,
                                                             List<String> missingFactors,
                                                             long datesMismatch)
@@ -357,6 +358,8 @@ public class Queries {
 
         updateReqObj.field(VALUE, value);
         indexReqObj.field(VALUE, value);
+        updateReqObj.field(RATIONALE, info);
+        indexReqObj.field(RATIONALE, info);
         updateReqObj.field(MISSING_FACTORS, missingFactors);
         indexReqObj.field(MISSING_FACTORS, missingFactors);
         updateReqObj.field(DATES_MISMATCH, datesMismatch);

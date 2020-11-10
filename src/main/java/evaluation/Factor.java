@@ -1,9 +1,6 @@
 package evaluation;
 
-import DTOs.EstimationEvaluationDTO;
-import DTOs.FactorEvaluationDTO;
-import DTOs.FactorMetricEvaluationDTO;
-import DTOs.MetricEvaluationDTO;
+import DTOs.*;
 import org.elasticsearch.action.update.UpdateResponse;
 import util.Common;
 import util.Constants;
@@ -257,7 +254,10 @@ public class Factor {
         Terms agg = sr.getAggregations().get("IDGroup");
         List<MetricEvaluationDTO> metricsEval = Common.processMetricsBuckets(agg);
 
-        return new FactorMetricEvaluationDTO(factorID, factorName, projectId, metricsEval);
+        FactorEvaluationDTO factorEvaluationDTO = getSingleEvaluation(projectId, factorID);
+
+        //return new FactorMetricEvaluationDTO(factorID, factorName, projectId, metricsEval);
+        return new FactorMetricEvaluationDTO(factorEvaluationDTO, metricsEval);
     }
 
     /**
@@ -286,7 +286,9 @@ public class Factor {
         Terms agg = sr.getAggregations().get("IDGroup");
         List<MetricEvaluationDTO> metricsEval = Common.processMetricsBuckets(agg);
 
-        return new FactorMetricEvaluationDTO(factorID, factorName, projectId, metricsEval);
+        FactorEvaluationDTO factorEvaluationDTO = getSingleEvaluation(projectId, factorID);
+        //return new FactorMetricEvaluationDTO(factorID, factorName, projectId, metricsEval);
+        return new FactorMetricEvaluationDTO(factorEvaluationDTO,metricsEval);
     }
 
     private static Map<String, String> getFactorsIDNames(String projectId) throws IOException {

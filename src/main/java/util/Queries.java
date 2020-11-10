@@ -3,12 +3,12 @@ package util;
 import DTOs.EstimationEvaluationDTO;
 import DTOs.EvaluationDTO;
 import DTOs.FactorEvaluationDTO;
+import DTOs.MetricEvaluationDTO;
 import DTOs.QuadrupletDTO;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.nio.entity.NStringEntity;
 import org.elasticsearch.action.bulk.BulkRequest;
-import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchRequest;
@@ -204,7 +204,7 @@ public class Queries {
             if (QMLevel==Constants.QMLevel.metrics) {
                 query = QueryBuilders
                         .boolQuery()
-                        .must(new TermQueryBuilder(ARRAY_FACTORS, parent));
+                        .must(new WildcardQueryBuilder(ARRAY_FACTORS, parent + "*"));
             }
             else {
                 // The strategic indicators in the factors index contains the evaluation date --> we need to use wildcards
@@ -233,7 +233,7 @@ public class Queries {
             if (QMLevel==Constants.QMLevel.metrics) {
                 query = QueryBuilders
                         .boolQuery()
-                        .must(new TermQueryBuilder(ARRAY_FACTORS, parent))
+                        .must(new WildcardQueryBuilder(ARRAY_FACTORS, parent + "*"))
                         .filter(QueryBuilders
                                 .rangeQuery(EVALUATION_DATE)
                                 .gte(from)
@@ -402,6 +402,82 @@ public class Queries {
         return client.update(updateRequest);
     }
 
+    public static UpdateResponse setFactorValue(QMLevel QMLevel,
+                                                String hardID,
+                                                String projectId,
+                                                String factorID,
+                                                String factorName,
+                                                String factorDescription,
+                                                LocalDate evaluationDate,
+                                                Float value,
+                                                String info,
+                                                EstimationEvaluationDTO estimation,
+                                                List<String> missingMetrics,
+                                                long datesMismatch,
+                                                List<String> indicators)
+            throws IOException {
+
+        XContentBuilder indexReqObj = jsonBuilder()
+                .startObject()
+                .field(PROJECT, projectId)
+                .field(FACTOR_ID, factorID)
+                .field(EVALUATION_DATE, evaluationDate)
+                .field(DATA_SOURCE, "QRapids Dashboard")
+                .field(NAME, factorName)
+                .field(DESCRIPTION, factorDescription);
+
+        // If the entry already exists, we update the information about the assessment
+        XContentBuilder updateReqObj = jsonBuilder().startObject();
+
+        updateReqObj.field(VALUE, value);
+        indexReqObj.field(VALUE, value);
+        updateReqObj.field(RATIONALE, info);
+        indexReqObj.field(RATIONALE, info);
+        updateReqObj.field(MISSING_METRICS, missingMetrics);
+        indexReqObj.field(MISSING_METRICS, missingMetrics);
+        updateReqObj.field(DATES_MISMATCH, datesMismatch);
+        indexReqObj.field(DATES_MISMATCH, datesMismatch);
+        updateReqObj.field(ARRAY_STRATEGIC_INDICATORS, indicators);
+        indexReqObj.field(ARRAY_STRATEGIC_INDICATORS, indicators);
+
+
+        if (estimation != null) {
+            updateReqObj.startArray(ESTIMATION);
+            indexReqObj.startArray(ESTIMATION);
+            for (QuadrupletDTO<Integer, String, Float, Float> e : estimation.getEstimation()) {
+                indexReqObj.startObject();
+                updateReqObj.startObject();
+                indexReqObj.field(ESTIMATION_ID, e.getFirst());
+                updateReqObj.field(ESTIMATION_ID, e.getFirst());
+                indexReqObj.field(ESTIMATION_LABEL, e.getSecond());
+                updateReqObj.field(ESTIMATION_LABEL, e.getSecond());
+                indexReqObj.field(ESTIMATION_VALUE, e.getThird());
+                updateReqObj.field(ESTIMATION_VALUE, e.getThird());
+                indexReqObj.field(ESTIMATION_UPPER_THRESHOLD, e.getFourth());
+                updateReqObj.field(ESTIMATION_UPPER_THRESHOLD, e.getFourth());
+                indexReqObj.endObject();
+                updateReqObj.endObject();
+            }
+            updateReqObj.endArray();
+            indexReqObj.endArray();
+        }
+        updateReqObj.endObject();
+        indexReqObj.endObject();
+
+        RestHighLevelClient client = Connection.getConnectionClient();
+        IndexRequest indexRequest = new IndexRequest(getIndex(projectId, QMLevel),
+                INDEX_FACTORS,
+                hardID)
+                .source(indexReqObj);
+
+        UpdateRequest updateRequest = new UpdateRequest(getIndex(projectId, QMLevel),
+                INDEX_FACTORS,
+                hardID)
+                .doc(updateReqObj)
+                .upsert(indexRequest);
+        return client.update(updateRequest);
+    }
+
     // Funtion that updates the factors' index with the information of the strategic indicators using
     // a concrete factor evaluation. These entries already exist in the factors' index.
     public static UpdateResponse setFactorStrategicIndicatorRelation(FactorEvaluationDTO factor)
@@ -448,6 +524,51 @@ public class Queries {
         return response;
     }
 
+    // Funtion that updates the metrics' index with the information of the quality factor using
+    // a concrete metric evaluation. These entries already exist in the metrics' index.
+    public static UpdateResponse setMetricQualityFactorRelation(MetricEvaluationDTO metric)
+            throws IOException {
+
+        String index_name = getIndex(metric.getProject(), QMLevel.metrics);
+
+        UpdateResponse response = new UpdateResponse();
+        RestHighLevelClient client = Connection.getConnectionClient();
+
+        String metricID;
+        int index=0;
+
+        if (metric.getEvaluations().isEmpty()) {
+        }
+        else {
+            for (EvaluationDTO eval: metric.getEvaluations())
+            {
+                metricID = metric.getMetricEntryID(index++);
+
+                IndexRequest indexReq = new IndexRequest(
+                        index_name,
+                        METRIC_TYPE,
+                        metricID)
+                        .source(jsonBuilder()
+                                .startObject()
+                                .endObject());
+
+                UpdateRequest updateReq = new UpdateRequest (
+                        index_name,
+                        METRIC_TYPE,
+                        metricID)
+                        .doc(jsonBuilder()
+                                .startObject()
+                                .field(ARRAY_FACTORS, metric.getFactors())
+                                .endObject())
+                        .upsert(indexReq);
+                response = client.update(updateReq);
+            }
+
+        }
+
+        return response;
+    }
+
     public static boolean setFactorSIRelationIndex(String projectID, String[] factorID, double[] weight,
                                                    double[] sourceValue, String[] sourceCategories,
                                                    String strategicIndicatorID, LocalDate evaluationDate,
@@ -462,7 +583,7 @@ public class Queries {
             String relation = String.join("-", projectID, factorID[i]) + "->" +
                     String.join("-", strategicIndicatorID, evaluationDate.toString());
 
-            IndexRequest ir = buildBulkWriteRequest(projectID, evaluationDate, relation, sourceID, targetID,
+            IndexRequest ir = buildBulkWriteRequest(projectID, evaluationDate, relation, false, sourceID, targetID,
                     safeGetFromDoubleArray(sourceValue, i), safeGetFromStringArray(sourceCategories, i),
                     safeGetFromDoubleArray(weight, i), targetValue);
             request.add(ir);
@@ -472,9 +593,38 @@ public class Queries {
         return !bulkresponse.hasFailures();
     }
 
-    public static IndexRequest buildBulkWriteRequest(String projectID, LocalDate evaluationDate, String relation,
-                                                  String sourceID, String targetID, double value, String sourceCategory,
-                                                     double weight, String targetValue) throws IOException {
+    public static boolean setMetricQFRelationIndex(String projectID, String[] metricID, double[] weight,
+                                                   double[] sourceValue, String[] sourceCategories,
+                                                   String qualityFactorID, LocalDate evaluationDate,
+                                                   String targetValue) throws IOException {
+
+        RestHighLevelClient client = Connection.getConnectionClient();
+        BulkRequest request = new BulkRequest();
+
+        for (int i = 0; i < metricID.length; i++) {
+            String sourceID = String.join("-", projectID, metricID[i], evaluationDate.toString());
+            String targetID = String.join("-", projectID, qualityFactorID, evaluationDate.toString());
+            String relation = String.join("-", projectID, metricID[i]) + "->" +
+                    String.join("-", qualityFactorID, evaluationDate.toString());
+
+            IndexRequest ir = buildBulkWriteRequest(projectID, evaluationDate, relation, true, sourceID, targetID,
+                    safeGetFromDoubleArray(sourceValue, i), safeGetFromStringArray(sourceCategories, i),
+                    safeGetFromDoubleArray(weight, i), targetValue);
+            request.add(ir);
+        }
+
+        BulkResponse bulkresponse = client.bulk(request);
+        return !bulkresponse.hasFailures();
+    }
+
+    public static IndexRequest buildBulkWriteRequest(String projectID, LocalDate evaluationDate, String relation, Boolean metrics,
+                                                  String sourceID, String targetID, double value, String sourceCategory, double weight, String targetValue) throws IOException {
+        String sourceType = FACTOR_TYPE;
+        String targetType = STRATEGIC_INDICATOR_TYPE;
+        if (metrics) {
+            sourceType = METRIC_TYPE;
+            targetType = FACTOR_TYPE;
+        }
         return new IndexRequest(getRelationsIndex(projectID), RELATIONS_TYPE, relation)
                 .source(jsonBuilder()
                         .startObject()
@@ -482,13 +632,13 @@ public class Queries {
                         .field(PROJECT, projectID)
                         .field(RELATION, relation)
                         .field(SOURCEID, sourceID)
-                        .field(SOURCETYPE, FACTOR_TYPE)
+                        .field(SOURCETYPE, sourceType)
                         .field(TARGETID, targetID)
-                        .field(TARGETTPYE, STRATEGIC_INDICATOR_TYPE)
+                        .field(TARGETTPYE, targetType)
                         .field(VALUE, value)
-                        .field(WEIGHT, weight)                                //0 IF SI IS BN
+                        .field(WEIGHT, weight)                                // 0 IF SI IS BN
                         .field(TARGETVALUE, targetValue)
-                        .field(SOURCELABEL, sourceCategory)                      //NULL IF SI IS NUMERIC
+                        .field(SOURCELABEL, sourceCategory)                   // NULL IF SI IS NUMERIC
                         .endObject());
     }
 
@@ -528,6 +678,30 @@ public class Queries {
         RestClient lowLevelClient = Connection.getLowLevelConnectionClient();
         String jsonMapping = STRATEGIC_INDICATORS_MAPPING;
         String endpoint = "/" + getIndexPath(STRATEGIC_INDICATOR_TYPE, projectID);
+        HttpEntity entity = new NStringEntity(jsonMapping, ContentType.APPLICATION_JSON);
+        Response response = null;
+        try {
+            response = lowLevelClient.performRequest("PUT", endpoint, Collections.emptyMap(), entity);
+            if (response.getStatusLine().getStatusCode() != 200) {
+                throw new ResponseException(response);
+            } else {
+                System.out.println("INDEX CREATED: " + endpoint);
+                return true;
+            }
+        } catch (ResponseException e) {
+            if (e.getMessage().contains("already exists")) {
+                System.out.println("INDEX ALREADY EXISTS: " + endpoint);
+                return false;
+            } else {
+                throw e;
+            }
+        }
+    }
+
+    public static boolean prepareQFIndex(String projectID) throws IOException {
+        RestClient lowLevelClient = Connection.getLowLevelConnectionClient();
+        String jsonMapping = FACTORS_MAPPING;
+        String endpoint = "/" + getIndexPath(FACTOR_TYPE, projectID);
         HttpEntity entity = new NStringEntity(jsonMapping, ContentType.APPLICATION_JSON);
         Response response = null;
         try {

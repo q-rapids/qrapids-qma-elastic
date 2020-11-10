@@ -1,5 +1,6 @@
 package evaluation;
 
+import DTOs.MetricEvaluationDTO;
 import DTOs.Relations.RelationDTO;
 import DTOs.Relations.SourceRelationDTO;
 import DTOs.Relations.TargetRelationDTO;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static util.Queries.getLatestRelationsDate;
@@ -76,5 +78,15 @@ public class Relations {
 
         return Queries.setFactorSIRelationIndex(projectID, factorID, weight, sourceValue, sourceCategories,
                 strategicIndicatorID, evaluationDate, targetValue);
+    }
+
+    public static boolean setQualityFactorMetricRelation(String projectID, String[] metrics,
+                                                              String qualityFactorID, LocalDate evaluationDate,
+                                                              double[] weight, double[] sourceValue,
+                                                              String[] sourceCategories, String targetValue)
+            throws IOException {
+
+        return Queries.setMetricQFRelationIndex(projectID, metrics, weight, sourceValue, sourceCategories,
+                qualityFactorID, evaluationDate, targetValue);
     }
 }

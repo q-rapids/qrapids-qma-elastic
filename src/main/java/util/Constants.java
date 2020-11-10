@@ -23,7 +23,9 @@ public class Constants {
     static final String DATA_SOURCE = "datasource";
     static final String PROJECT = "project";                    // project being evaluated         (new v1.0)
     static final String RATIONALE = "info";                     // explanaiton of the element value  (new v1.0)
-    static final String MISSING_FACTORS = "missing_factors";    // factors without assessment        (new v1.0)
+    static final String INDICATORS = "indicators";// list of strategic indicators in which calculation is involved the factor
+    static final String MISSING_FACTORS = "missing_factors";// factors without assessment        (new v1.0)
+    static final String MISSING_METRICS = "missing_metrics";// metrics without assessment        (new v1.0)
     static final String DATES_MISMATCH = "dates_mismatch_days"; // new (v1.0
                                                                 // maximum difference (in days) when there is
                                                                 // difference evaluation dates between the SI and Factor
@@ -77,6 +79,29 @@ public class Constants {
                             "\"type\": { \"type\": \"keyword\"},\n" +
                             "\"strategic_indicator\" : {\"type\" : \"keyword\"},\n" +
                             "\"value\" : {\"type\" : \"double\"}\n" +
+                        "}\n" +
+                    "}\n" +
+                "}\n" +
+            "}";
+
+    static final String FACTORS_MAPPING =
+            "{\n" +
+                "\"mappings\" : {\n" +
+                    "\"" + FACTOR_TYPE + "\" : {\n" +
+                        "\"properties\" : {\n" +
+                            "\"datasource\" : {\"type\" : \"keyword\"},\n" +
+                            "\"dates_mismatch_days\" : {\"type\" : \"long\"},\n" +
+                            "\"description\" : {\"type\" : \"text\"},\n" +
+                            "\"evaluationDate\" : {\"type\" : \"date\"},\n" +
+                            "\"missing_metrics\" : {\"type\" : \"text\",\n" +
+                            "\"fields\" : {\"keyword\" : {\"type\" : \"keyword\",\n" +
+                            "\"ignore_above\" : 256}}},\n" +
+                            "\"name\" : {\"type\" : \"keyword\"},\n" +
+                            "\"project\" : {\"type\" : \"keyword\"},\n" +
+                            "\"type\": { \"type\": \"keyword\"},\n" +
+                            "\"factor\" : {\"type\" : \"keyword\"},\n" +
+                            "\"value\" : {\"type\" : \"double\"},\n" +
+                            "\"indicators\" : {\"type\" : \"text\"}\n" +
                         "}\n" +
                     "}\n" +
                 "}\n" +

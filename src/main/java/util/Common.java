@@ -48,6 +48,8 @@ public class Common {
                 metricEval.setID(Queries.getStringFromMap(result, Constants.METRIC_ID));
                 metricEval.setName(Queries.getStringFromMapOrDefault(result, Constants.NAME, metricEval.getID()));
                 metricEval.setDescription(Queries.getStringFromMap(result, Constants.DESCRIPTION));
+                metricEval.setProject(Queries.getStringFromMapOrDefault(result, Constants.PROJECT, ""));
+                metricEval.setFactors(Queries.getArrayListFromMap(result, Constants.ARRAY_FACTORS));
             }
             metricEval.setEvaluations(evals);
             ret.add(metricEval);

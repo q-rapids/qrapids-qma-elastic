@@ -91,6 +91,78 @@ public class Factor {
     }
 
     /**
+     * The external repository have two identifiers for each element, the field used by the repository (hard ID) and the
+     * id and evaluation date used by the "users".
+     *
+     * @param projectId identifier of the project
+     * @param qualityFactorID identifier of the quality factor
+     * @param evaluationDate date when the evaluation has been computed
+     *
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws ExecutionException
+     */
+    public static String getHardID(String projectId, String qualityFactorID, LocalDate evaluationDate)
+            throws IOException {
+        if (!projectId.isEmpty())
+            return projectId + "-" + qualityFactorID + "-" + FormattedDates.formatDate(evaluationDate);
+        else
+            return qualityFactorID + "-" + FormattedDates.formatDate(evaluationDate);
+    }
+
+    /**
+     * This method updates the value of an quality factors in a given date, if it doesn't exist
+     * a new quality factor is created with the given data.
+     *
+     * @param projectId identifier of the project
+     * @param factorID identifier of the quality factor
+     * @param factorName name of the quality factor
+     * @param factorDescription description of the quality factor
+     * @param value evaluation value
+     * @param evaluationDate date when the evaluation has been computed
+     * @param estimation    in case we have a estimation (probavilities and probable values), instead of a single value
+     *
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws ExecutionException
+     */
+    public static UpdateResponse setFactorEvaluation(String projectId,
+                                                            String factorID,
+                                                            String factorName,
+                                                            String factorDescription,
+                                                            Float value,
+                                                            String info,
+                                                            LocalDate evaluationDate,
+                                                            EstimationEvaluationDTO estimation,
+                                                            List<String> missingMetrics,
+                                                            long datesMismatch,
+                                                            List<String> indicators)
+            throws IOException {
+        UpdateResponse response;
+
+        // unique id used to identify the entry
+        String elastic_entry_ID=getHardID(projectId, factorID, evaluationDate);
+        // We store the quality factor assessment
+        response = Queries.setFactorValue(
+                Constants.QMLevel.factors,
+                elastic_entry_ID,
+                projectId,
+                factorID,
+                factorName,
+                factorDescription,
+                evaluationDate,
+                value,
+                info,
+                estimation,
+                missingMetrics,
+                datesMismatch,
+                indicators);
+
+        return response;
+
+    }
+
+    /**
      * This method updates the value of the strategic indicators relation for a list of factor.
      *
      * @param factors DTO with the factor information

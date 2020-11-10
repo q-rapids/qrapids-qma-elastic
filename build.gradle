@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'maven'
 
 group = 'com.dw'
-version = '0.18'
+version = '0.19'
 
 description = """qrapids-qma-elastic"""
 
@@ -13,7 +13,7 @@ targetCompatibility = 1.8
 
 repositories {
         
-     maven { url "http://repo.maven.apache.org/maven2" }
+     maven { url "https://repo.maven.apache.org/maven2" }
 }
 dependencies {
     compile group: 'org.elasticsearch', name: 'elasticsearch', version:'5.6.3'

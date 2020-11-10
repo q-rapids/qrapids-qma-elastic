@@ -20,7 +20,6 @@ public class FactorEvaluationDTO extends ElemenEvaluationtDTO {
     }
     public void setStrategicIndicators(List<String> strategic_indicators) {
         this.strategic_indicators = strategic_indicators;
-
     }
     public List<String> getStrategicIndicators() {
         return this.strategic_indicators;

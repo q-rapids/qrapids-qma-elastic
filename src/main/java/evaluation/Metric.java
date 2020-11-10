@@ -6,6 +6,7 @@ import util.Constants;
 import util.FormattedDates;
 import util.Queries;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 
 import java.io.IOException;
@@ -104,6 +105,27 @@ public class Metric {
         }
 
         return metricEvaluationDTO;
+    }
+
+    /**
+     * This method updates the value of the quality factors relation for a list of metrics.
+     *
+     * @param metrics DTO with the metric information
+     *
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws ExecutionException
+     */
+    public static UpdateResponse setQualityFactorsRelation(List<MetricEvaluationDTO> metrics)
+            throws IOException {
+
+        UpdateResponse response = new UpdateResponse();
+
+        for (MetricEvaluationDTO metric: metrics){
+            response = Queries.setMetricQualityFactorRelation(metric);
+        }
+
+        return response;
     }
 
 }

@@ -285,14 +285,7 @@ public class StrategicIndicator {
         StrategicIndicatorFactorEvaluationDTO siFactors = getFactorsEvaluations(projectId,strategicIndicatorID);
 
         for (FactorEvaluationDTO factor : siFactors.getFactors()) {
-            ret.add(new FactorMetricEvaluationDTO(
-                    factor.getID(),
-                    factor.getName(),
-                    factor.getProject(),
-                    Factor.getMetricsEvaluations(
-                            factor.getProject(),
-                            factor.getID())
-                            .getMetrics()));
+            ret.add(new FactorMetricEvaluationDTO(factor, Factor.getMetricsEvaluations(factor.getProject(),factor.getID()).getMetrics()));
         }
         return ret;
     }
@@ -320,14 +313,7 @@ public class StrategicIndicator {
                                                                                 strategicIndicatorID, from, to);
 
         for (FactorEvaluationDTO factor : siFactors.getFactors()) {
-            ret.add(new FactorMetricEvaluationDTO(
-                    factor.getID(),
-                    factor.getName(),
-                    factor.getProject(),
-                    Factor.getMetricsEvaluations(
-                            factor.getProject(),
-                            factor.getID(), from, to)
-                            .getMetrics()));
+            ret.add(new FactorMetricEvaluationDTO(factor, Factor.getMetricsEvaluations(factor.getProject(),factor.getID(), from, to).getMetrics()));
         }
         return ret;
     }

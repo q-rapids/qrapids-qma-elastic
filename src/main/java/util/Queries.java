@@ -349,12 +349,17 @@ public class Queries {
                 .field(PROJECT, projectId)
                 .field(STRATEGIC_INDICATOR_ID, strategicIndicatorID)
                 .field(EVALUATION_DATE, evaluationDate)
-                .field(DATA_SOURCE, "QRapids Dashboard")
-                .field(NAME, strategicIndicatorName)
-                .field(DESCRIPTION, strategicIndicatorDescription);
+                .field(DATA_SOURCE, "QRapids Dashboard");
+                //.field(NAME, strategicIndicatorName)
+                //.field(DESCRIPTION, strategicIndicatorDescription);
 
         // If the entry already exists, we update the information about the assessment
         XContentBuilder updateReqObj = jsonBuilder().startObject();
+
+        updateReqObj.field(NAME, strategicIndicatorName);
+        indexReqObj.field(NAME, strategicIndicatorName);
+        updateReqObj.field(DESCRIPTION, strategicIndicatorDescription);
+        indexReqObj.field(DESCRIPTION, strategicIndicatorDescription);
 
         updateReqObj.field(VALUE, value);
         indexReqObj.field(VALUE, value);
@@ -422,12 +427,17 @@ public class Queries {
                 .field(PROJECT, projectId)
                 .field(FACTOR_ID, factorID)
                 .field(EVALUATION_DATE, evaluationDate)
-                .field(DATA_SOURCE, "QRapids Dashboard")
-                .field(NAME, factorName)
-                .field(DESCRIPTION, factorDescription);
+                .field(DATA_SOURCE, "QRapids Dashboard");
+                //.field(NAME, factorName)
+                //.field(DESCRIPTION, factorDescription);
 
         // If the entry already exists, we update the information about the assessment
         XContentBuilder updateReqObj = jsonBuilder().startObject();
+
+        updateReqObj.field(NAME, factorName);
+        indexReqObj.field(NAME, factorName);
+        updateReqObj.field(DESCRIPTION, factorDescription);
+        indexReqObj.field(DESCRIPTION, factorDescription);
 
         updateReqObj.field(VALUE, value);
         indexReqObj.field(VALUE, value);

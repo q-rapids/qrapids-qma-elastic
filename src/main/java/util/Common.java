@@ -82,6 +82,11 @@ public class Common {
                         Queries.getStringFromMap(result, Constants.EVALUATION_DATE),
                         Queries.getStringFromMap(result, Constants.VALUE),
                         Queries.getStringFromMap(result, Constants.RATIONALE));
+                // take mismatch days and missing elements from elasticsearch factors evaluations (if its provided by dashboard, qr-eval doesn't have this fields)
+                if (Queries.getIntFromMap(result, Constants.DATES_MISMATCH) != null)
+                    eval.setMismatchDays(Queries.getIntFromMap(result, Constants.DATES_MISMATCH));
+                if (Queries.getArrayListFromMap(result, Constants.MISSING_METRICS) != null)
+                    eval.setMissingElements(Queries.getArrayListFromMap(result, Constants.MISSING_METRICS));
 
                 evals.add(eval);
 

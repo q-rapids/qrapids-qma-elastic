@@ -404,6 +404,8 @@ public class Queries {
                                                         hardID)
                 .doc(updateReqObj)
                 .upsert(indexRequest);
+        // wait for ElasticSearch to finish updating it's index
+        updateRequest.setRefreshPolicy("wait_for");
         return client.update(updateRequest);
     }
 
@@ -485,6 +487,8 @@ public class Queries {
                 hardID)
                 .doc(updateReqObj)
                 .upsert(indexRequest);
+        // wait for ElasticSearch to finish updating it's index
+        updateRequest.setRefreshPolicy("wait_for");
         return client.update(updateRequest);
     }
 
@@ -526,6 +530,8 @@ public class Queries {
                                 .field(ARRAY_STRATEGIC_INDICATORS, factor.getStrategicIndicators())
                                 .endObject())
                         .upsert(indexReq);
+                // wait for ElasticSearch to finish updating it's index
+                updateReq.setRefreshPolicy("wait_for");
                 response = client.update(updateReq);
             }
 
@@ -571,6 +577,8 @@ public class Queries {
                                 .field(ARRAY_FACTORS, metric.getFactors())
                                 .endObject())
                         .upsert(indexReq);
+                // wait for ElasticSearch to finish updating it's index
+                updateReq.setRefreshPolicy("wait_for");
                 response = client.update(updateReq);
             }
 

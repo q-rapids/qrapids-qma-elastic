@@ -37,7 +37,7 @@ public class Project{
             index_name = object.get("index").getAsString();
 
             is_added = false;
-            pos_index = index_name.lastIndexOf(Constants.INDEX_FACTORS);
+            pos_index = index_name.lastIndexOf(Constants.INDEX_METRICS);
             if (pos_index != -1) {
                 pos_preffix = index_name.lastIndexOf('.', pos_index);
                 pos_suffix = index_name.indexOf('.', pos_index);
